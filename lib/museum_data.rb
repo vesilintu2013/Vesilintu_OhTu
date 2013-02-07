@@ -12,6 +12,7 @@ module MuseumData
   # Some details of the parsing process:
   # - Empty fields are marked as nil in the hash
   # - Float values in the format "99,9" are converted first to "99.9" and then to float 99.9
+  # - Boolean values are either 1 for true and 0 for false, other values result to nil
   # - EEE-coordinate is a special case. The coordinate system uses three numbers for the North
   #   East coordinates, but only two numbers are present in the old data for EEE-coordinate, since
   #   all of them start with the number 3 when pointing at Finland. To clear things up, integer
@@ -23,7 +24,14 @@ module MuseumData
       return nil
       data = parse_data filename
       data.each do |observation|
-        Observation.create(generate_model_hash(observation))
+        model = Observation.new(generate_model_hash(observation))
+        if !model.valid?
+          # Do something smart here! Create good error messages!
+          puts "Error creating model, original data:"
+          puts observation[:original_data]
+        else
+          model.save!
+        end
       end
     end
 
@@ -74,6 +82,8 @@ module MuseumData
         observation[key] += additional_counts[key]
       end
 
+      observation[:original_data] = line
+
       observation
     end
 
@@ -102,21 +112,20 @@ module MuseumData
     def self.convert_value type, value
       return nil if value.nil?
       value.strip!
+      return nil if value.empty?
 
       if type == :integer
 
-        return nil if value.empty?
         return value.to_i
 
       elsif type == :float
 
-        return nil if value.empty?
         return value.gsub(",",".").to_f
 
       elsif type == :boolean
 
         return true if value == "1"
-        return false
+        return false if value == "0"
 
       end
 
