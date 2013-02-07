@@ -1,42 +1,102 @@
 module MuseumData
-  class Reader
+
+  # The MuseumData::Parser class specified below provides functionality for parsing the provided
+  # old-format data into a ruby hash, which can then be further converted into Rails model objects if
+  # so desired. 
+  #
+  # Parser class uses MuseumData::DATA_FIELDS constant, which contains the name, width and type of the
+  # datafields in the old format text data. There is no data validation done, all is to be handled within
+  # the actual Rails model. This parsing information is derived from the documentation delivered by Heikki
+  # Lokki.
+  #
+  # Some details of the parsing process:
+  # - Empty fields are marked as nil in the hash
+  # - Float values in the format "99,9" are converted first to "99.9" and then to float 99.9
+  # - EEE-coordinate is a special case. The coordinate system uses three numbers for the North
+  #   East coordinates, but only two numbers are present in the old data for EEE-coordinate, since
+  #   all of them start with the number 3 when pointing at Finland. To clear things up, integer
+  #   300 is added to all EEE-coordinates, so that they are consistent with the NNN-coordinates
+  class Parser
+
+    def self.generate_models filename
+      #TODO Rails model creation from the data below.
+      return nil
+      data = parse_data filename
+      data.each do |observation|
+        Observation.create(generate_model_hash(observation))
+      end
+    end
 
     def self.parse_data filename
       output = []
       File.open(filename).each_line do |line|
-
-        line.strip!
-        observation = {}
-        offset = 0
-        DATA_FIELDS.each do |field|
-          value = line[offset , field[:width]]
-          offset += field[:width]
-          value = convert_value field[:type], value
-          observation[field[:name]] = value
-        end
-        extra_data = line[offset, line.length - offset]
-        offset = 0
-        other_species = {}
-
-        while offset < extra_data.length
-          extra_obs = extra_data[offset, 9]
-          offset += 9
-
-          name = extra_obs[0,6].downcase.to_sym
-          count = convert_value :integer, extra_obs[6,3]
-
-          if observation.keys.include? name && !count.nil?
-            observation[name] += count
-          else
-            other_species[name] = count
-          end
-        end
-        observation[:other_species] = other_species
-
-        output << observation
-
+        output << parse_observation(line.strip!)
       end
       output
+    end
+
+    private
+
+    def self.generate_model_hash observation
+      #TODO model specification needed
+      {}
+    end
+
+    def self.parse_observation line
+      observation = {}
+      offset = 0
+
+      # The functionality is quite simple. Value is read from the line using offset and width,
+      # and afterwards the offset is incremented by the width. Value is stripped of whitespace
+      # and converted to either integer, string or float.
+      DATA_FIELDS.each do |field|
+        value = line[offset , field[:width]]
+        offset += field[:width]
+        value = convert_value field[:type], value
+
+        # Special case, see in the comment block above class definition
+        if field[:name] == :eee_coordinate
+          value += 300
+        end
+
+        observation[field[:name]] = value
+      end
+
+      # After the specified fields, there is the possibility of having additional observations.
+      # These observations follow a specified format of XXXXXXYYY, where X:s are the abbreviation
+      # of the species and YYY is the count. These additional observations may either be unlisted
+      # species, or additional counts of listed species that did not fit within the 3-character
+      # field reserved for counts.
+      other_species, additional_counts = parse_other_species line[offset, line.length - offset]
+
+      observation[:other_species] = other_species
+      additional_counts.keys.each do |key|
+        observation[key] += additional_counts[key]
+      end
+
+      observation
+    end
+
+    def self.parse_other_species extra_data
+      offset = 0
+      other_species = {}
+      additional_counts = {}
+
+      while offset < extra_data.length
+        extra_obs = extra_data[offset, 9]
+        offset += 9
+
+        name = extra_obs[0,6].downcase.to_sym
+        count = convert_value :integer, extra_obs[6,3]
+
+        if DATA_FIELDS.map{|field| field[:name]}.include? name && !count.nil?
+          additional_counts[name] = count
+        else
+          other_species[name] = count
+        end
+      end
+
+      return [other_species , additional_counts]
     end
 
     def self.convert_value type, value
@@ -44,17 +104,20 @@ module MuseumData
       value.strip!
 
       if type == :integer
-        if value.empty?
-          return nil
-        else
-          return value.to_i
-        end
+
+        return nil if value.empty?
+        return value.to_i
+
+      elsif type == :float
+
+        return nil if value.empty?
+        return value.gsub(",",".").to_f
+
       elsif type == :boolean
-        if value == "1"
-          return true
-        else
-          return false
-        end
+
+        return true if value == "1"
+        return false
+
       end
 
       return value
@@ -87,12 +150,12 @@ module MuseumData
     :type => :string
     },
     {
-    :name => :NNN_coordinate,
+    :name => :nnn_coordinate,
     :width => 3,
     :type => :integer
     },
     {
-    :name => :EEE_coordinate,
+    :name => :eee_coordinate,
     :width => 2,
     :type => :integer
     },
@@ -164,12 +227,12 @@ module MuseumData
     {
     :name => :water_system_area,
     :width => 6,
-    :type => :integer
+    :type => :float
     },
     {
     :name => :place_counting_area,
     :width => 6,
-    :type => :integer
+    :type => :float
     },
     {
     :name => :place_counting_area_covers_whole_water_system,
@@ -338,7 +401,7 @@ module MuseumData
     :type => :integer
     },
     {
-    :name => :KAHLAAJAT_KAULUSHAIKARA,
+    :name => :waders_eurasian_bittern,
     :width => 1,
     :type => :boolean
     },
@@ -383,7 +446,7 @@ module MuseumData
     :type => :integer
     },
     {
-    :name => :VARPUSLINNUT,
+    :name => :passerine,
     :width => 1,
     :type => :boolean
     },
