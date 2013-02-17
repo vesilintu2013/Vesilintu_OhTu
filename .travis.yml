@@ -1,4 +1,13 @@
 language: ruby
+services: sqlite3
 rvm:
   - 1.9.3
-
+branches:
+  only:
+    - master
+before_script:  
+  - rake db:create RAILS_ENV=test
+  - rake db:migrate RAILS_ENV=test
+notifications:
+  email:
+    - jarloz.kimmo@gmail.com
