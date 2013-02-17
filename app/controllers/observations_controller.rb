@@ -4,6 +4,11 @@ class ObservationsController < ApplicationController
   end
 
   def show
-    @observation = Observation.find(params[:id])
+    begin
+      @observation = Observation.find(params[:id])
+    rescue ActiveRecord::RecordNotFound
+      flash[:error] = "Record not found in database"
+      redirect_to observations_path
+    end
   end
 end
