@@ -84,7 +84,7 @@ class Lisalajit < ActiveRecords::Migration
         end
     end
     def down
-        drop table :lisalajit
+        drop_table :lisalajit
     end
 end
             
