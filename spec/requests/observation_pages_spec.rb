@@ -22,4 +22,14 @@ describe "Observation pages" do
 			end
 		end
 	end
+
+	describe "show Observation page" do
+	  before do
+		  observation = FactoryGirl.create(:observation)
+			visit observation_path(observation)
+	  end
+
+	  it { should have_selector('h1', :text => "Havainnon tiedot") }
+
+	end
 end
