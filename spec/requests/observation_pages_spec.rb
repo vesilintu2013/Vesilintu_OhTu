@@ -5,9 +5,21 @@ describe "Observation pages" do
 
 	describe "index page" do
 	  before do
+			FactoryGirl.create(:observation, :year => "1987")
+			FactoryGirl.create(:observation, :year => "1988")
+			FactoryGirl.create(:observation, :year => "1999")
+			FactoryGirl.create(:observation, :year => "2000")
+			FactoryGirl.create(:observation, :year => "2002")
+			FactoryGirl.create(:observation, :year => "2011")
 		  visit observations_path
 	 end
 
 		it { should have_selector('h1', :text => "Kaikki havainnot") }
+
+		it "should show all observations" do
+		  Observation.all.each do |observation|
+			  page.should have_selector('li', text: "#{observation.year}")
+			end
+		end
 	end
 end

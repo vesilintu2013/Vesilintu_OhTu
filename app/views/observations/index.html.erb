@@ -1,9 +1,12 @@
 <h1>Kaikki havainnot</h1>
 
 <ul>
-  <% @observations.each do |observation| %>
+  <% @observations.each do | o | %>
     <li>
-      <%= link_to "#{observation.id}", observation %>
+      <%= link_to "Reitti: #{o.route_number}, 
+			             Vuosi: #{o.year},
+									 Reitin paikan numero: #{o.observation_place_number}", 
+									 o %>
     </li>
   <% end %>
 </ul>
