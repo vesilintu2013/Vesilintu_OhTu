@@ -21,7 +21,7 @@ module MuseumData
 
     def self.generate_models filename
       #TODO Rails model creation from the data below.
-      return nil
+      #return nil
       data = parse_data filename
       data.each do |observation|
         model = Observation.new(generate_model_hash(observation))
@@ -38,7 +38,8 @@ module MuseumData
     def self.parse_data filename
       output = []
       File.open(filename).each_line do |line|
-        output << parse_observation(line.strip!)
+        observation = parse_observation(line.strip!)
+        output << observation unless observation.nil?
       end
       output
     end
@@ -46,11 +47,48 @@ module MuseumData
     private
 
     def self.generate_model_hash observation
-      #TODO model specification needed
-      {}
+      hash = {}
+      observation.keys.each do |key|
+        next if SKIP_FIELDS.include? key #Certain fields are not used directly.
+        hash[key] = observation[key]
+      end
+
+      begin
+        hash[:first_observation_date] = Date.new(hash[:year],observation[:first_observation_date_month],observation[:first_observation_date_day])
+      rescue
+        puts "PROBLEM, first date wrong: #{hash[:year]},#{observation[:first_observation_date_month]},#{observation[:first_observation_date_day]}"
+        puts "Original: #{observation[:original_data]}"
+      end
+
+      begin
+        hash[:second_observation_date] = Date.new(hash[:year],observation[:second_observation_date_month],observation[:second_observation_date_day])
+      rescue
+        puts "PROBLEM, second date wrong: #{hash[:year]},#{observation[:second_observation_date_month]},#{observation[:second_observation_date_day]}"
+        puts "Original: #{observation[:original_data]}"
+      end
+
+      covering_area = observation[:places_which_cover_whole_water_system]
+      unless covering_area == nil
+        if covering_area =~ /-/
+          covering_area = covering_area.split("-")
+        else
+          covering_area = covering_area.split(" ")
+        end
+      end
+
+      if covering_area != nil && covering_area.count == 2
+        hash[:covering_area_beginning] = covering_area.first.to_i
+        hash[:covering_area_end] = covering_area.last.to_i
+      else
+        hash[:covering_area_beginning] = nil
+        hash[:covering_area_end] = nil
+      end
+      hash
+
     end
 
     def self.parse_observation line
+      return if line.nil?
       observation = {}
       offset = 0
 
@@ -92,7 +130,7 @@ module MuseumData
       other_species = {}
       additional_counts = {}
 
-      while offset < extra_data.length
+      while extra_data != nil && offset < extra_data.length
         extra_obs = extra_data[offset, 9]
         offset += 9
 
@@ -132,6 +170,14 @@ module MuseumData
       return value
     end
   end
+  SKIP_FIELDS = [:first_observation_date_day,
+    :first_observation_date_month,
+    :second_observation_date_day,
+    :second_observation_date_month,
+    :places_which_cover_whole_water_system,
+    :other_species,
+    :original_data,
+    :roaming_counting]
   DATA_FIELDS = [
     {
     :name => :route_number,
@@ -204,12 +250,12 @@ module MuseumData
     :type => :integer
     },
     {
-    :name => :first_observation_time_hour,
+    :name => :first_observation_hour,
     :width => 2,
     :type => :integer
     },
     {
-    :name => :first_observation_length_minutes,
+    :name => :first_observation_duration,
     :width => 3,
     :type => :integer
     },
@@ -224,12 +270,12 @@ module MuseumData
     :type => :integer
     },
     {
-    :name => :second_observation_time_hour,
+    :name => :second_observation_hour,
     :width => 2,
     :type => :integer
     },
     {
-    :name => :second_observation_length_minutes,
+    :name => :second_observation_duration,
     :width => 3,
     :type => :integer
     },
@@ -239,24 +285,19 @@ module MuseumData
     :type => :float
     },
     {
-    :name => :place_counting_area,
+    :name => :place_area,
     :width => 6,
     :type => :float
     },
     {
-    :name => :place_counting_area_covers_whole_water_system,
+    :name => :area_covers_fully,
     :width => 1,
     :type => :integer
     },
     {
     :name => :places_which_cover_whole_water_system,
-    :width => 5,
+    :width => 7,
     :type => :string
-    },
-    {
-    :name => :unknown,
-    :width => 2,
-    :type => :integer
     },
     {
     :name => :spot_counting,
