@@ -1,6 +1,6 @@
 class ObservationsController < ApplicationController
   def index
-    @observations = Observation.find_all
+    @observations = Observation.all
   end
 
   def show

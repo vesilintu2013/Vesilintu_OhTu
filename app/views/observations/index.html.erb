@@ -1,3 +1,9 @@
-<html>
-  <h1>You are on the Observations index page!</h1>
-</html>
+<h1>Kaikki havainnot</h1>
+
+<ul>
+  <% @observations.each do |observation| %>
+    <li>
+      <%= link_to "#{observation.id}", observation %>
+    </li>
+  <% end %>
+</ul>

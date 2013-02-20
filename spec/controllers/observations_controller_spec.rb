@@ -3,11 +3,11 @@ require 'spec_helper'
 describe ObservationsController do
   describe 'accessing the observations index page' do
     before do
-      Observation.stub(:find_all).and_return("All Observations")
+      Observation.stub(:all).and_return("All Observations")
     end
 
     it 'should call the Observation model for all observations' do
-      Observation.should_receive(:find_all)
+      Observation.should_receive(:all)
       get :index
     end
 
