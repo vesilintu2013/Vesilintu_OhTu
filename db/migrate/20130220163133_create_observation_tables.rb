@@ -65,6 +65,7 @@ class CreateObservationTables < ActiveRecord::Migration
       t.boolean :passerine, :null => false
       t.integer :embsch, :null => false
       t.integer :acrsch, :null => false         
+      t.timestamps
     end
   end
 
