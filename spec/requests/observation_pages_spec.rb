@@ -86,4 +86,42 @@ describe "Observation pages" do
 	  it { should have_selector('li', :text =>
 		            "Käytettiinkö venettä? #{observation.boat}") }
 	end
+
+  describe "search page" do
+    before do
+			FactoryGirl.create(:observation, :year => "1987")
+			FactoryGirl.create(:observation, :year => "1988")
+			FactoryGirl.create(:observation, :year => "1999",
+                                       :route_number => 6666)
+			FactoryGirl.create(:observation, :year => "2000",
+                                       :observer_id => '555')
+			FactoryGirl.create(:observation, :year => "2002",
+                                       :observation_place_number => '10')
+			FactoryGirl.create(:observation, :year => "2011")
+    end
+
+    it "should find results by year" do
+      visit observations_search_path(:year => '1988') 
+      page.should have_selector('li', :text => "1988")
+      page.should_not have_selector('li', :text => "1987")
+    end
+
+    it "should find results by route number" do
+      visit observations_search_path(:route_number => '6666')
+      page.should have_selector('li', :text => '1999')
+      page.should_not have_selector('li', :text => '1987')
+    end
+
+    it "should find results by observer id" do
+      visit observations_search_path(:observer_id => '555')
+      page.should have_selector('li', :text => '2000')
+      page.should_not have_selector('li', :text => '1999')
+    end
+
+    it "should find results by observation place number" do
+      visit observations_search_path(:observation_place_number => '10')
+      page.should have_selector('li', :text => '2002')
+      page.should_not have_selector('li', :text => '2000')
+    end
+  end
 end
