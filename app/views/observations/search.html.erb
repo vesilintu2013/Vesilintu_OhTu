@@ -13,6 +13,9 @@
 <% end %>
 
 <h2>Hakutulokset</h2>
-<ul>
-  <%= render @observations %>
-</ul>
+<% unless @observations.nil? %>
+  <%= will_paginate @observations %>
+  <ul>
+    <%= render @observations %>
+  </ul>
+<% end %>

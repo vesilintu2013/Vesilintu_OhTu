@@ -1,7 +1,7 @@
 class ObservationsController < ApplicationController
 
   def index
-    @observations = Observation.all
+    @observations = Observation.paginate(:page => params[:page])
   end
 
   def show
@@ -15,6 +15,6 @@ class ObservationsController < ApplicationController
 
   def search
     # Let the model decide which params are search parameters 
-    @observations = Observation.search(params)
+    @observations = Observation.search(params).paginate(:page => params[:page])
   end
 end
