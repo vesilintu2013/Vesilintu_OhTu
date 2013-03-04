@@ -1,0 +1,25 @@
+<h1>Hakusivu</h1>
+
+<%= form_tag observations_search_path, :method => 'get' do %>
+  <%= label_tag :route_number, 'Reitin numero' %>
+  <%= text_field_tag :route_number, params[:route_number] %>
+  <%= label_tag :year, 'Vuosi' %>
+  <%= text_field_tag :year, params[:year] %>
+  <%= label_tag :observation_place_number, 'Reitin paikan numero' %>
+  <%= text_field_tag :observation_place_number, params[:observation_place_number] %>
+  <%= label_tag :observer_id, 'Havainnoijanumero' %>
+  <%= text_field_tag :observer_id, params[:observer_id] %>
+  <%= submit_tag "Search", :name => nil %>
+<% end %>
+
+<h2>Hakutulokset</h2>
+<ul>
+  <% @observations.each do | o | %>
+    <li>
+      <%= link_to "Reitti: #{o.route_number}, 
+                   Vuosi: #{o.year},
+                   Reitin paikan numero: #{o.observation_place_number}", 
+                   o %>
+    </li>
+  <% end %>
+</ul>
