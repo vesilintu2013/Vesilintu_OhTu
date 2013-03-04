@@ -58,4 +58,25 @@ describe ObservationsController do
       end
     end
   end
+
+	describe "accessing the search observations page" do
+		before do
+		  Observation.stub(:search).and_return("Search results")
+		end
+	  
+		it "should call the observation search method with search params" do
+		  Observation.should_receive(:search).with("Search terms")
+			post :search, :search_terms => "Search terms"
+		end
+
+		it "should render the observations search results page" do
+		  post :search
+			response.should render_template('search')
+		end
+
+		it "should make the search results available to the view" do
+      post :search
+			assigns(:observations).should == "Search results"
+		end
+	end
 end

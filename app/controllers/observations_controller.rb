@@ -1,4 +1,5 @@
 class ObservationsController < ApplicationController
+
   def index
     @observations = Observation.all
   end
@@ -11,4 +12,8 @@ class ObservationsController < ApplicationController
       redirect_to observations_path
     end
   end
+
+  def search
+	  @observations = Observation.search(params[:search_terms])
+	end
 end

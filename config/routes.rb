@@ -1,5 +1,7 @@
 VesilintuOhtu::Application.routes.draw do
   resources :observations
+
+  match 'observations/search' => 'observations#search'
   # The priority is based upon order of creation:
   # first created -> highest priority.
 
