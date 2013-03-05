@@ -3,11 +3,11 @@ require 'spec_helper'
 describe ObservationsController do
   describe 'accessing the observations index page' do
     before do
-      Observation.stub(:all).and_return("All Observations")
+      Observation.stub(:paginate).and_return("All Observations")
     end
 
-    it 'should call the Observation model for all observations' do
-      Observation.should_receive(:all)
+    it 'should call the Observation method paginate for all observations' do
+      Observation.should_receive(:paginate)
       get :index
     end
 
@@ -61,22 +61,26 @@ describe ObservationsController do
 
   describe "accessing the search observations page" do
     before do
-      Observation.stub(:search).and_return("Search results")
+      FactoryGirl.create(:observation, :route_number => "9005")
     end
 	  
     it "should call the observation search method with right params" do
-      Observation.should_receive(:search).with(hash_including(:route_number => "6666"))
-      post :search, :route_number => "6666"
+      # Need to stub nil.paginate because Observation.search returns nil
+      # with the request below. No idea why. The search method
+      # obviously receives the correct params as the test passes.
+      nil.stub(:paginate)
+      Observation.should_receive(:search).with(hash_including(:route_number => '9005'))
+      get :search, :route_number => "9005"
     end
 
     it "should render the observations search results page" do
-      post :search
+      get :search
       response.should render_template('search')
     end
 
     it "should make the search results available to the view" do
-      post :search
-      assigns(:observations).should == "Search results"
+      get :search 
+      assigns(:observations).should == Observation.all
     end
   end
 end
