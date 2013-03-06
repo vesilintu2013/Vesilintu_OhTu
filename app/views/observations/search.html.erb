@@ -1,17 +1,18 @@
 <div class="row">
-  <div class="span4">
-    <%= render 'layouts/search' %>
-  </div>
-  <div class="span8">
+  <div class="row">
     <div class="page-header">
       <h1>Hakutulokset</h1>
     </div>
-
-    <% unless @observations.nil? %>
-      <%= will_paginate @observations %>
-      <ul>
-        <%= render @observations %>
-      </ul>
-    <% end %>
+    <div class="span4">
+      <%= render 'layouts/search' %>
+    </div>
+    <div class="span8">
+      <% unless @observations.nil? %>
+        <%= will_paginate @observations %>
+        <ul class="unstyled">
+          <%= render @observations %>
+        </ul>
+      <% end %>
+    </div>
   </div>
 </div>
