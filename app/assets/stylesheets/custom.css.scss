@@ -1,1 +1,9 @@
 @import "bootstrap";
+
+body {
+  padding-top: 60px;
+}
+
+.nav li a {
+  color: $white;
+}

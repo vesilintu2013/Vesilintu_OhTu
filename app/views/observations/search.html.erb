@@ -1,21 +1,17 @@
-<h1>Hakusivu</h1>
+<div class="row">
+  <div class="span4">
+    <%= render 'layouts/search' %>
+  </div>
+  <div class="span8">
+    <div class="page-header">
+      <h1>Hakutulokset</h1>
+    </div>
 
-<%= form_tag observations_search_path, :method => 'get' do %>
-  <%= label_tag :route_number, 'Reitin numero' %>
-  <%= text_field_tag :route_number, params[:route_number] %>
-  <%= label_tag :year, 'Vuosi' %>
-  <%= text_field_tag :year, params[:year] %>
-  <%= label_tag :observation_place_number, 'Reitin paikan numero' %>
-  <%= text_field_tag :observation_place_number, params[:observation_place_number] %>
-  <%= label_tag :observer_id, 'Havainnoijanumero' %>
-  <%= text_field_tag :observer_id, params[:observer_id] %>
-  <%= submit_tag "Hae havaintoja", :name => nil %>
-<% end %>
-
-<h2>Hakutulokset</h2>
-<% unless @observations.nil? %>
-  <%= will_paginate @observations %>
-  <ul>
-    <%= render @observations %>
-  </ul>
-<% end %>
+    <% unless @observations.nil? %>
+      <%= will_paginate @observations %>
+      <ul>
+        <%= render @observations %>
+      </ul>
+    <% end %>
+  </div>
+</div>

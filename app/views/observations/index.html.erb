@@ -1,6 +1,16 @@
-<h1>Kaikki havainnot</h1>
-
-<%= will_paginate @observations %>
-<ul>
-  <%= render @observations %>
-</ul>
+<div class="row">
+  <div class="span4">
+    <%= render 'layouts/search' %>
+  </div>
+  <div class="span8">
+    <div class="page-header">
+      <h1>Kaikki havainnot</h1>
+    </div>
+    <% unless @observations.nil? %>
+      <%= will_paginate @observations %>
+      <ul>
+        <%= render @observations %>
+      </ul>
+    <% end %>
+  </div>
+</div>
