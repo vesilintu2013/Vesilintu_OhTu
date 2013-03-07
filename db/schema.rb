@@ -11,11 +11,18 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130220165145) do
+ActiveRecord::Schema.define(:version => 20130301091327) do
 
-  create_table "additional_observations", :force => true do |t|
+  create_table "birds", :force => true do |t|
+    t.string   "name"
+    t.string   "abbr"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  create_table "counts", :force => true do |t|
     t.integer  "observation_id"
-    t.string   "species_code"
+    t.integer  "bird_id"
     t.integer  "count"
     t.datetime "created_at",     :null => false
     t.datetime "updated_at",     :null => false
@@ -48,44 +55,10 @@ ActiveRecord::Schema.define(:version => 20130220165145) do
     t.boolean  "spot_counting"
     t.boolean  "binoculars"
     t.boolean  "boat"
-    t.integer  "anapla"
-    t.integer  "anacre"
-    t.integer  "anaacu"
-    t.integer  "anacly"
-    t.integer  "aytfer"
-    t.integer  "buccla"
-    t.integer  "mermer"
-    t.integer  "fulatr"
-    t.integer  "gavarc"
-    t.integer  "podcri"
-    t.integer  "podgri"
-    t.integer  "podaur"
-    t.integer  "cygcyg"
-    t.integer  "ansfab"
-    t.integer  "bracan"
-    t.integer  "anapen"
-    t.integer  "anaque"
-    t.integer  "aytful"
-    t.integer  "melfus"
-    t.integer  "merser"
-    t.integer  "meralb"
     t.boolean  "gullbirds"
-    t.integer  "larmin"
-    t.integer  "larrid"
-    t.integer  "larcan"
-    t.integer  "stehir"
     t.boolean  "waders_eurasian_bittern"
-    t.integer  "galgal"
-    t.integer  "trigla"
-    t.integer  "trineb"
-    t.integer  "trioch"
-    t.integer  "acthyp"
-    t.integer  "numarq"
-    t.integer  "vanvan"
-    t.integer  "botste"
     t.boolean  "passerine"
-    t.integer  "embsch"
-    t.integer  "acrsch"
+    t.string   "source"
     t.datetime "created_at",                                   :null => false
     t.datetime "updated_at",                                   :null => false
   end

@@ -27,44 +27,10 @@ class CreateObservationTables < ActiveRecord::Migration
       t.boolean :spot_counting # true = piste, false = kierto
       t.boolean :binoculars
       t.boolean :boat
-      t.integer :anapla  #???
-      t.integer :anacre 
-      t.integer :anaacu 
-      t.integer :anacly 
-      t.integer :aytfer 
-      t.integer :buccla 
-      t.integer :mermer 
-      t.integer :fulatr 
-      t.integer :gavarc 
-      t.integer :podcri 
-      t.integer :podgri 
-      t.integer :podaur 
-      t.integer :cygcyg 
-      t.integer :ansfab 
-      t.integer :bracan 
-      t.integer :anapen 
-      t.integer :anaque 
-      t.integer :aytful 
-      t.integer :melfus 
-      t.integer :merser 
-      t.integer :meralb 
       t.boolean :gullbirds 
-      t.integer :larmin 
-      t.integer :larrid 
-      t.integer :larcan 
-      t.integer :stehir 
       t.boolean :waders_eurasian_bittern 
-      t.integer :galgal 
-      t.integer :trigla 
-      t.integer :trineb 
-      t.integer :trioch 
-      t.integer :acthyp 
-      t.integer :numarq 
-      t.integer :vanvan 
-      t.integer :botste 
       t.boolean :passerine 
-      t.integer :embsch 
-      t.integer :acrsch          
+      t.string :source # RKTL or museum
       t.timestamps
     end
   end

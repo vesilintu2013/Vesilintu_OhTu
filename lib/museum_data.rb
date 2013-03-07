@@ -31,6 +31,9 @@ module MuseumData
           puts observation[:original_data]
         else
           model.save!
+	  observation[:counts_data].keys.each do |key|
+            Count.create(:observation_id => model.id, :bird_id => Bird.find_by_abbr(key.to_s).id, :count => observation[:counts_data][key])
+	  end
         end
       end
     end
@@ -83,6 +86,7 @@ module MuseumData
         hash[:covering_area_beginning] = nil
         hash[:covering_area_end] = nil
       end
+      hash[:source] = "museum"
       hash
 
     end
@@ -121,6 +125,10 @@ module MuseumData
       end
 
       observation[:original_data] = line
+      observation[:counts_data] = {}
+      Bird.all.map{|b| b.abbr.to_sym}.each do |abbr_key|
+        observation[:counts_data][abbr_key] = observation.delete(abbr_key) 
+      end
 
       observation
     end
@@ -177,6 +185,7 @@ module MuseumData
     :places_which_cover_whole_water_system,
     :other_species,
     :original_data,
+    :counts_data,
     :roaming_counting]
   DATA_FIELDS = [
     {
