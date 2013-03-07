@@ -26,43 +26,8 @@ FactoryGirl.define do
 		spot_counting									true
 		binoculars										false
 		boat													false
-		anapla												"0"
-		anacre												"0"
-		anaacu												"0"
-		anacly												"0"
-		aytfer												"0"
-		buccla												"0"
-		mermer												"0"
-		fulatr												"0"
-		gavarc												"0"
-		podcri												"0"
-		podgri												"0"
-		podaur												"0"
-		cygcyg												nil
-		ansfab												nil
-		bracan												nil
-		anapen												"0"
-		anaque												"0"
-		aytful												"0"
-		melfus												"0"
-		merser												"0"
-		meralb												nil
 		gullbirds											true
-		larmin												"0"
-		larrid												"0"
-		larcan												"0"
-		stehir												"0"
 		waders_eurasian_bittern				true
-		galgal												"0"
-		trigla												nil
-		trineb												nil
-		trioch												nil
-		acthyp												"0"
-		numarq												nil
-		vanvan												nil
-		botste												nil
 		passerine											true
-		embsch												"0"
-		acrsch												"0"
 	end
 end
