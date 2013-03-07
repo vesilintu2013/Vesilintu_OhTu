@@ -2,39 +2,48 @@
   <h1>Havainnon tiedot</h1>
 </div>
 
-<h2>Perustiedot</h2>
-<ul>
-  <li>Reitin numero: <%= @observation.route_number %></li>
-	<li>Vuosi: <%= @observation.year %></li>
-	<li>Reitin paikan numero: <%= @observation.observation_place_number %></li>
-	<li>Havainnoijatunnus: <%= @observation.observer_id %></li>
-	<li>Kuntakoodi: <%= @observation.municipal_code %></li>
-	<li>NNN-koordinaatti: <%= @observation.nnn_coordinate %></li>
-	<li>EEE-koordinaatti: <%= @observation.eee_coordinate %></li>
-	<li>Biotooppiluokka: <%= @observation.biotope_class %></li>
-	<li>Reitin edustavuus: <%= @observation.route_representative_class %></li>
-	<li>Pistelaskentapaikkojen määrä reitillä: <%= @observation.spot_observation_place_count %></li>
-	<li>Kiertolaskentapaikkojen määrä reitillä: <%= @observation.roaming_observation_place_count %></li>
-	<li>Havaintopaikan nimi: <%= @observation.observation_place_name %></li>
-	<li>1. laskentakerran pvm: <%= @observation.first_observation_date %></li>
-	<li>2. laskentakerran pvm: <%= @observation.second_observation_date %></li>
-	<li>1. laskentakerran aloitustunti: <%= @observation.first_observation_hour %></li>
-	<li>2. laskentakerran aloitustunti: <%= @observation.second_observation_hour %></li>
-	<li>1. laskentakerran kesto: <%= @observation.first_observation_duration %></li>
-	<li>2. laskentakerran kesto: <%=  @observation.second_observation_duration %></li>
-	<li>Laskentapaikan ala: <%= @observation.place_area %></li>
-	<li>Koko vesistön ala: <%= @observation.water_system_area %></li>
-	<li>Laskentapaikka kattoi koko vesistön: <%= @observation.area_covers_fully %></li>
-	<li>Koko vesistön kattavat paikat alkaen: <%= @observation.covering_area_beginning %></li>
-	<li>Koko vesistön kattavat paikat päättyen: <%= @observation.covering_area_end %></li>
-	<li>Pistelaskenta? <%= @observation.spot_counting %></li>
-	<li>Käytettiinkö kaukoputkea? <%= @observation.binoculars %></li>
-	<li>Käytettiinkö venettä? <%= @observation.boat %></li>
-</ul>
+<div class="row">
+  <div class="span6">
+    <h2>Perustiedot</h2>
+    <ul class="unstyled">
+      <li>Reitin numero: <%= @observation.route_number %></li>
+      <li>Vuosi: <%= @observation.year %></li>
+      <li>Reitin paikan numero: <%= @observation.observation_place_number %></li>
+      <li>Havainnoijatunnus: <%= @observation.observer_id %></li>
+      <li>Kuntakoodi: <%= @observation.municipal_code %></li>
+      <li>NNN-koordinaatti: <%= @observation.nnn_coordinate %></li>
+      <li>EEE-koordinaatti: <%= @observation.eee_coordinate %></li>
+      <li>Biotooppiluokka: <%= @observation.biotope_class %></li>
+      <li>Reitin edustavuus: <%= @observation.route_representative_class %></li>
+      <li>Pistelaskentapaikkojen määrä reitillä: <%= @observation.spot_observation_place_count %></li>
+      <li>Kiertolaskentapaikkojen määrä reitillä: <%= @observation.roaming_observation_place_count %></li>
+      <li>Havaintopaikan nimi: <%= @observation.observation_place_name %></li>
+      <li>1. laskentakerran pvm: <%= @observation.first_observation_date %></li>
+      <li>2. laskentakerran pvm: <%= @observation.second_observation_date %></li>
+      <li>1. laskentakerran aloitustunti: <%= @observation.first_observation_hour %></li>
+      <li>2. laskentakerran aloitustunti: <%= @observation.second_observation_hour %></li>
+      <li>1. laskentakerran kesto: <%= @observation.first_observation_duration %></li>
+      <li>2. laskentakerran kesto: <%=  @observation.second_observation_duration %></li>
+      <li>Laskentapaikan ala: <%= @observation.place_area %></li>
+      <li>Koko vesistön ala: <%= @observation.water_system_area %></li>
+      <li>Laskentapaikka kattoi koko vesistön: <%= @observation.area_covers_fully %></li>
+      <li>Koko vesistön kattavat paikat alkaen: <%= @observation.covering_area_beginning %></li>
+      <li>Koko vesistön kattavat paikat päättyen: <%= @observation.covering_area_end %></li>
+      <li>Pistelaskenta? <%= @observation.spot_counting %></li>
+      <li>Käytettiinkö kaukoputkea? <%= @observation.binoculars %></li>
+   	  <li>Käytettiinkö venettä? <%= @observation.boat %></li>
+      <li>Laskettiinko lokkilinnut: <%= @observation.gullbirds %></li>
+   	  <li>Laskettiinko kahlaajat ja kaulushaikara: <%= @observation.waders_eurasian_bittern %></li>
+      <li>Laskettiinko varpuslinnut: <%= @observation.passerine %></li>
+    </ul>
+  </div>
 
-<h2>Havainnot</h2>
-<ul>
-	<li>Laskettiinko lokkilinnut: <%= @observation.gullbirds %></li>
- 	<li>Laskettiinko kahlaajat ja kaulushaikara: <%= @observation.waders_eurasian_bittern %></li>
- 	<li>Laskettiinko varpuslinnut: <%= @observation.passerine %></li>
-</ul>
+  <div class="span6">
+    <h2>Havaitut</h2>
+    <ul class="unstyled">
+     <% @observation.counts.each do |count| %>
+        <li><%= count.bird.abbr %>: <%= count.count %></li>
+      <% end %>
+    </ul>
+    </div>
+</div>

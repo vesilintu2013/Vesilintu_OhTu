@@ -30,4 +30,15 @@ FactoryGirl.define do
 		waders_eurasian_bittern				true
 		passerine											true
 	end
+
+  factory :bird do
+    abbr    "analpa"
+    name    "sorsa"
+  end
+
+  factory :count do
+    bird_id         "1"
+    count           "0"
+    observation_id  "1"
+  end
 end

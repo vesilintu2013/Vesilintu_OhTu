@@ -1,43 +1,45 @@
-# encoding: UTF-8
-require 'spec_helper'
+        # encoding: UTF-8
+        require 'spec_helper'
 
-describe "Observation pages" do
-  subject { page }
+        describe "Observation pages" do
+          subject { page }
 
-	describe "index page" do
-	  before do
-			FactoryGirl.create(:observation, :year => "1987")
-			FactoryGirl.create(:observation, :year => "1988")
-			FactoryGirl.create(:observation, :year => "1999")
-			FactoryGirl.create(:observation, :year => "2000")
-			FactoryGirl.create(:observation, :year => "2002")
-			FactoryGirl.create(:observation, :year => "2011")
-		  visit observations_path
-	 end
+          describe "index page" do
+            before do
+              FactoryGirl.create(:observation, :year => "1987")
+              FactoryGirl.create(:observation, :year => "1988")
+              FactoryGirl.create(:observation, :year => "1999")
+              FactoryGirl.create(:observation, :year => "2000")
+              FactoryGirl.create(:observation, :year => "2002")
+              FactoryGirl.create(:observation, :year => "2011")
+              visit observations_path
+           end
 
-		it { should have_selector('h1', :text => "Kaikki havainnot") }
+            it { should have_selector('h1', :text => "Kaikki havainnot") }
 
-		it "should show all observations" do
-		  Observation.all.each do |observation|
-			  page.should have_selector('li', text: "#{observation.year}")
-			end
-		end
-	end
+            it "should show all observations" do
+              Observation.all.each do |observation|
+                page.should have_selector('li', text: "#{observation.year}")
+              end
+            end
+          end
 
-	describe "show Observation page" do
-		observation = FactoryGirl.create(:observation)
+          describe "show Observation page" do
+            observation = FactoryGirl.create(:observation)
+            bird = FactoryGirl.create(:bird)
+            count = FactoryGirl.create(:count, :observation_id => observation.id, :bird_id => bird.id, :count => "10")
 
-	  before do
-			visit observation_path(observation)
-	  end
+            before do
+              visit observation_path(observation)
+            end
 
-	  it { should have_selector('h1', :text => "Havainnon tiedot") }
+            it { should have_selector('h1', :text => "Havainnon tiedot") }
 
-    it { should have_selector('li', :text => 
-		            "Reitin numero: #{observation.route_number}") }
-		it { should have_selector('li', :text => 
-		            "Vuosi: #{observation.year}") }
-		it { should have_selector('li', :text => 
+            it { should have_selector('li', :text => 
+                        "Reitin numero: #{observation.route_number}") }
+            it { should have_selector('li', :text => 
+                        "Vuosi: #{observation.year}") }
+            it { should have_selector('li', :text => 
 		            "Reitin paikan numero: #{observation.observation_place_number}") }
 	  it { should have_selector('li', :text =>
 		            "Havainnoijatunnus: #{observation.observer_id}") }
@@ -85,6 +87,8 @@ describe "Observation pages" do
 		            "Käytettiinkö kaukoputkea? #{observation.binoculars}") }
 	  it { should have_selector('li', :text =>
 		            "Käytettiinkö venettä? #{observation.boat}") }
+    it { should have_selector('li', :text =>
+                "#{bird.abbr}: 10") }
 	end
 
   describe "search page" do
