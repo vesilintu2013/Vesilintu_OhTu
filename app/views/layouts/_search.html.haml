@@ -1,0 +1,12 @@
+= form_tag observations_search_path, :method => 'get' do
+  = label_tag :route_number, 'Reitin numero'
+  = text_field_tag :route_number, params[:route_number]
+  = label_tag :year, 'Vuosi'
+  = text_field_tag :year, params[:year]
+  = label_tag :observation_place_name, 'Havaintopaikan nimi'
+  = text_field_tag :observation_place_name, params[:observation_place_name]
+  = label_tag :observation_place_number, 'Reitin paikan numero'
+  = text_field_tag :observation_place_number, params[:observation_place_number]
+  = label_tag :observer_id, 'Havainnoijatunnus'
+  = text_field_tag :observer_id, params[:observer_id]
+  = submit_tag "Hae havaintoja", :name => nil, :class => 'btn'

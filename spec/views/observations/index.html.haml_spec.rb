@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "observations/index.html.erb" do
+describe "observations/index.html.haml" do
   it "renders the _search partial" do
     render
 

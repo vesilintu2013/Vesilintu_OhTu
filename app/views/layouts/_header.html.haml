@@ -1,0 +1,10 @@
+.navbar.navbar-fixed-top
+  .navbar-inner
+    .container
+      = link_to "VesilintuOhtu", "/", :class => 'brand'
+    
+      %ul.nav.nav-tabs
+        %li 
+          = link_to "Etusivu", "/"
+        %li 
+          = link_to "Haku", observations_search_path
