@@ -8,7 +8,8 @@ describe Observation do
                                           :route_number => "9005",
                                           :year => "2000")
       @observation_b = FactoryGirl.create(:observation,
-                                          :year => "2000")
+                                          :year => "2000",
+                                          :observation_place_name => "TESTIPAIKKA")
       @observation_c = FactoryGirl.create(:observation,
                                           :observation_place_number => "10")
       @observation_d = FactoryGirl.create(:observation,
@@ -29,6 +30,10 @@ describe Observation do
 
     it "finds records by observer id" do
       Observation.search("observer_id" => "66").should == [@observation_d]
+    end
+
+    it "finds records by observation place name" do
+      Observation.search("observation_place_name" => "testipaikka").should == [@observation_b]
     end
 
     it "finds records by a combination of search terms" do
