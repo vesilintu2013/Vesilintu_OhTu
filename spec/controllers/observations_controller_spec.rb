@@ -59,6 +59,38 @@ describe ObservationsController do
     end
   end
 
+  describe 'accessing the edit observation page' do
+    describe 'when the Observation is found' do
+      before do
+        Observation.stub(:find).and_return("An observation")
+        get :edit, :id => '1'
+      end
+
+      it 'should render the edit Oservation page' do
+        response.should render_template('edit')
+      end
+
+      it 'should make the Observation available to the view' do
+        assigns(:observation).should == "An observation"
+      end
+    end
+
+    describe 'when the Observation is not found' do
+      before do
+        Observation.stub(:find).and_raise(ActiveRecord::RecordNotFound)
+        get :edit, :id => '1'
+      end
+
+      it 'should render the index page' do
+        response.should redirect_to(observations_path)
+      end
+
+      it 'should flash an error message' do
+        flash[:error].should_not be_nil
+      end
+    end
+  end
+
   describe "accessing the search observations page" do
     before do
       FactoryGirl.create(:observation, :route_number => "9005")
