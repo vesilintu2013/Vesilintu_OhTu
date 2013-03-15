@@ -24,7 +24,23 @@ module MuseumData
       #return nil
       data = parse_data filename
       data.each do |observation|
-        model = Observation.new(generate_model_hash(observation))
+        observation_hash, place_hash, route_hash = generate_model_hashes(observation)
+	
+	route = Route.where(:route_number => route_hash[:route_number], :year => route_hash[:year])
+	if route.nil?
+	  route = Route.create(route_hash)
+	end
+
+	place = Place.new(place_hash)
+	place.route_id = route.id
+	place.save!
+
+	model = Observation.new(observation_hash)
+	model.route_id = route.id
+	model.place_id = place.id
+	
+	
+        #model = Observation.new(generate_model_hash(observation))
         if !model.valid?
           # Do something smart here! Create good error messages!
           puts "Error creating model, original data:"
@@ -50,23 +66,26 @@ module MuseumData
     private
 
     def self.generate_model_hash observation
-      hash = {}
+      observation_hash = {}
+      route_hash = {}
+      place_hash = {}
+
       observation.keys.each do |key|
         next if SKIP_FIELDS.include? key #Certain fields are not used directly.
-        hash[key] = observation[key]
+        observation_hash[key] = observation[key]
       end
 
       begin
-        hash[:first_observation_date] = Date.new(hash[:year],observation[:first_observation_date_month],observation[:first_observation_date_day])
+        observation_hash[:first_observation_date] = Date.new(observation_hash[:year],observation[:first_observation_date_month],observation[:first_observation_date_day])
       rescue
-        puts "PROBLEM, first date wrong: #{hash[:year]},#{observation[:first_observation_date_month]},#{observation[:first_observation_date_day]}"
+        puts "PROBLEM, first date wrong: #{observation_hash[:year]},#{observation[:first_observation_date_month]},#{observation[:first_observation_date_day]}"
         puts "Original: #{observation[:original_data]}"
       end
 
       begin
-        hash[:second_observation_date] = Date.new(hash[:year],observation[:second_observation_date_month],observation[:second_observation_date_day])
+        observation_hash[:second_observation_date] = Date.new(observation_hash[:year],observation[:second_observation_date_month],observation[:second_observation_date_day])
       rescue
-        puts "PROBLEM, second date wrong: #{hash[:year]},#{observation[:second_observation_date_month]},#{observation[:second_observation_date_day]}"
+        puts "PROBLEM, second date wrong: #{observation_hash[:year]},#{observation[:second_observation_date_month]},#{observation[:second_observation_date_day]}"
         puts "Original: #{observation[:original_data]}"
       end
 
@@ -80,14 +99,14 @@ module MuseumData
       end
 
       if covering_area != nil && covering_area.count == 2
-        hash[:covering_area_beginning] = covering_area.first.to_i
-        hash[:covering_area_end] = covering_area.last.to_i
+        observation_hash[:covering_area_beginning] = covering_area.first.to_i
+        observation_hash[:covering_area_end] = covering_area.last.to_i
       else
-        hash[:covering_area_beginning] = nil
-        hash[:covering_area_end] = nil
+        observation_hash[:covering_area_beginning] = nil
+        observation_hash[:covering_area_end] = nil
       end
-      hash[:source] = "museum"
-      hash
+      observation_hash[:source] = "museum"
+      observation_hash
 
     end
 
