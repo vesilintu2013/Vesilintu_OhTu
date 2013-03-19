@@ -6,12 +6,15 @@
 
           describe "index page" do
             before do
-              FactoryGirl.create(:observation, :year => "1987")
-              FactoryGirl.create(:observation, :year => "1988")
-              FactoryGirl.create(:observation, :year => "1999")
-              FactoryGirl.create(:observation, :year => "2000")
-              FactoryGirl.create(:observation, :year => "2002")
-              FactoryGirl.create(:observation, :year => "2011")
+              route1 = FactoryGirl.create(:route, :year => "1987")
+              route2 = FactoryGirl.create(:route, :year => "1988")
+              route3 = FactoryGirl.create(:route, :year => "2000")
+              place1 = FactoryGirl.create(:place, :route_id => route1.id) 
+              place2 = FactoryGirl.create(:place, :route_id => route2.id) 
+              place3 = FactoryGirl.create(:place, :route_id => route3.id) 
+              FactoryGirl.create(:observation, :year => route1.year, :route_id => route1.id, :place_id => place1.id)
+              FactoryGirl.create(:observation, :year => route2.year, :route_id => route2.id, :place_id => place2.id)
+              FactoryGirl.create(:observation, :year => route3.year, :route_id => route3.id, :place_id => place3.id)
               visit observations_path
            end
 
@@ -25,10 +28,12 @@
           end
 
           describe "show Observation page" do
-            observation = FactoryGirl.create(:observation)
+            route = FactoryGirl.create(:route)
+            place = FactoryGirl.create(:place, :route_id => route.id)
+            observation = FactoryGirl.create(:observation, :route_id => route.id, :place_id => place.id)
             bird = FactoryGirl.create(:bird)
             count = FactoryGirl.create(:count, :observation_id => observation.id, :bird_id => bird.id, :count => "10")
-
+            
             before do
               visit observation_path(observation)
             end
@@ -36,73 +41,89 @@
             it { should have_selector('h1', :text => "Havainnon tiedot") }
 
             it { should have_selector('li', :text => 
-                        "Reitin numero: #{observation.route_number}") }
+                        "Reitin numero: #{observation.route.route_number}") }
             it { should have_selector('li', :text => 
                         "Vuosi: #{observation.year}") }
             it { should have_selector('li', :text => 
-		            "Reitin paikan numero: #{observation.observation_place_number}") }
-	  it { should have_selector('li', :text =>
-		            "Havainnoijatunnus: #{observation.observer_id}") }
-		it { should have_selector('li', :text =>
-		            "Kuntakoodi: #{observation.municipal_code}") }
-	  it { should have_selector('li', :text =>
-								"NNN-koordinaatti: #{observation.nnn_coordinate}") }
-		it { should have_selector('li', :text =>
-								"EEE-koordinaatti: #{observation.eee_coordinate}") }
-	  it { should have_selector('li', :text =>
-		            "Biotooppiluokka: #{observation.biotope_class}") }
-		it { should have_selector('li', :text =>
-		            "Reitin edustavuus: #{observation.route_representative_class}") }
-		it { should have_selector('li', :text =>
-								"Pistelaskentapaikkojen määrä reitillä: #{observation.spot_observation_place_count}") }
-	  it { should have_selector('li', :text =>
-								"Kiertolaskentapaikkojen määrä reitillä: #{observation.roaming_observation_place_count}") }
-	  it { should have_selector('li', :text =>
-		            "Havaintopaikan nimi: #{observation.observation_place_name}") }
-	  it { should have_selector('li', :text =>
+		            "Reitin paikan numero: #{observation.place.observation_place_number}") }
+            it { should have_selector('li', :text =>
+                "Havainnoijatunnus: #{observation.observer_id}") }
+            it { should have_selector('li', :text =>
+		            "Kuntakoodi: #{observation.route.municipal_code}") }
+            it { should have_selector('li', :text =>
+								"NNN-koordinaatti: #{observation.place.nnn_coordinate}") }
+           	it { should have_selector('li', :text =>
+								"EEE-koordinaatti: #{observation.place.eee_coordinate}") }
+            it { should have_selector('li', :text =>
+		            "Biotooppiluokka: #{observation.place.biotope_class}") }
+            it { should have_selector('li', :text =>
+		            "Reitin edustavuus: #{observation.route.route_representative_class}") }
+            it { should have_selector('li', :text =>
+								"Pistelaskentapaikkojen määrä reitillä: #{observation.route.spot_observation_place_count}") }
+            it { should have_selector('li', :text =>
+								"Kiertolaskentapaikkojen määrä reitillä: #{observation.route.roaming_observation_place_count}") }
+            it { should have_selector('li', :text =>
+		            "Havaintopaikan nimi: #{observation.place.observation_place_name}") }
+            it { should have_selector('li', :text =>
 		            "1. laskentakerran pvm: #{observation.first_observation_date}") }
-	  it { should have_selector('li', :text =>
+            it { should have_selector('li', :text =>
 		            "2. laskentakerran pvm: #{observation.second_observation_date}") }
-	  it { should have_selector('li', :text =>
+            it { should have_selector('li', :text =>
 		            "1. laskentakerran aloitustunti: #{observation.first_observation_hour}") }
-	  it { should have_selector('li', :text =>
+            it { should have_selector('li', :text =>
 		            "2. laskentakerran aloitustunti: #{observation.second_observation_hour}") }
-	  it { should have_selector('li', :text =>
+            it { should have_selector('li', :text =>
 		            "1. laskentakerran kesto: #{observation.first_observation_duration}") }
-	  it { should have_selector('li', :text =>
+            it { should have_selector('li', :text =>
 		            "2. laskentakerran kesto: #{observation.second_observation_duration}") }
-	  it { should have_selector('li', :text =>
-		            "Koko vesistön ala: #{observation.water_system_area}") }
-	  it { should have_selector('li', :text =>
-		            "Laskentapaikan ala: #{observation.place_area}") }
-	  it { should have_selector('li', :text =>
-                "Laskentapaikka kattoi koko vesistön: #{observation.area_covers_fully}") }
-	  it { should have_selector('li', :text =>
-		            "Koko vesistön kattavat paikat alkaen: #{observation.covering_area_beginning}") }
-	  it { should have_selector('li', :text =>
-		            "Koko vesistön kattavat paikat päättyen: #{observation.covering_area_end}") }
-	  it { should have_selector('li', :text =>
+            it { should have_selector('li', :text =>
+		            "Koko vesistön ala: #{observation.route.water_system_area}") }
+            it { should have_selector('li', :text =>
+		            "Laskentapaikan ala: #{observation.place.place_area}") }
+            it { should have_selector('li', :text =>
+                "Laskentapaikka kattoi koko vesistön: #{observation.place.area_covers_fully}") }
+            it { should have_selector('li', :text =>
+		            "Koko vesistön kattavat paikat alkaen: #{observation.place.covering_area_beginning}") }
+            it { should have_selector('li', :text =>
+		            "Koko vesistön kattavat paikat päättyen: #{observation.place.covering_area_end}") }
+            it { should have_selector('li', :text =>
 		            "Pistelaskenta? #{observation.spot_counting}") }
-	  it { should have_selector('li', :text =>
+            it { should have_selector('li', :text =>
 		            "Käytettiinkö kaukoputkea? #{observation.binoculars}") }
-	  it { should have_selector('li', :text =>
+            it { should have_selector('li', :text =>
 		            "Käytettiinkö venettä? #{observation.boat}") }
-    it { should have_selector('li', :text =>
+            it { should have_selector('li', :text =>
                 "#{bird.abbr}: 10") }
 	end
 
   describe "search page" do
     before do
-			FactoryGirl.create(:observation, :year => "1987")
-			FactoryGirl.create(:observation, :year => "1988",
-                                       :observation_place_name => 'TESTIPAIKKA')
-			FactoryGirl.create(:observation, :year => "1999",
-                                       :route_number => 6666)
-			FactoryGirl.create(:observation, :year => "2000",
+      route_a = FactoryGirl.create(:route, :year => "1987")
+      place_a = FactoryGirl.create(:place)
+      place_b = FactoryGirl.create(:place, :observation_place_name => 'TESTIPAIKKA')
+      route_b = FactoryGirl.create(:route, :year => "1988")
+      route_c = FactoryGirl.create(:route, :year => "1999", :route_number => "6666")
+      place_c = FactoryGirl.create(:place)
+      route_d = FactoryGirl.create(:route, :year => "2000")
+      place_d = FactoryGirl.create(:place)
+      route_e = FactoryGirl.create(:route, :year => "2002")
+      place_e = FactoryGirl.create(:place, :observation_place_number => '10')
+			FactoryGirl.create(:observation, :route_id => route_a.id,
+                                       :place_id => place_a.id,
+                                       :year => route_a.year)
+			FactoryGirl.create(:observation, :route_id => route_b.id,
+                                       :place_id => place_b.id,
+                                       :year => route_b.year)
+			FactoryGirl.create(:observation, :route_id => route_c.id,
+                                       :place_id => place_c.id,
+                                       :year => route_c.year)
+			FactoryGirl.create(:observation, :place_id => place_d.id,
+                                       :route_id => route_d.id,
+                                       :year => route_d.year,
                                        :observer_id => '555')
-			FactoryGirl.create(:observation, :year => "2002",
-                                       :observation_place_number => '10')
-			FactoryGirl.create(:observation, :year => "2011")
+			FactoryGirl.create(:observation, :route_id => route_e.id,
+                                       :year => route_e.year,
+                                       :place_id => place_e.id)
     end
 
     it "should find results by year" do
