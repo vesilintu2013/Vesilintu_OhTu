@@ -4,7 +4,6 @@
 .row
   .span6
     %h2 Reitin tiedot
-    = link_to "Muokkaa havaintoa", edit_observation_path(@observation)
     %ul.unstyled
       %li Reitin numero: #{@observation.route.route_number}
       %li Kuntakoodi: #{@observation.route.municipal_code}
@@ -26,7 +25,8 @@
       %li Koko vesistön kattavat paikat päättyen: #{@observation.place.covering_area_end}
       
   .span6
-    %h2 Havainnon tiedot
+    %h2 Perustiedot
+    = link_to "Muokkaa havaintoa", edit_observation_path(@observation)
     %ul.unstyled
       %li Vuosi: #{@observation.year}
       %li Havainnoijatunnus: #{@observation.observer_id}
