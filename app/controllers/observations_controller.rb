@@ -26,4 +26,14 @@ class ObservationsController < ApplicationController
     # Let the model decide which params are search parameters 
     @observations = Observation.search(params).paginate(:page => params[:page])
   end
+
+  def update
+    @observation = Observation.find(params[:id])
+    if @observation.update_attributes(params[:observation])
+      flash[:success] = "Muutokset tallennettu"
+      redirect_to :action => 'show', :id => @observation
+    else
+      render :action => 'edit'
+    end
+  end
 end

@@ -1,9 +1,9 @@
 .page-header
-  %h1 Muokkaa havaintoa  #{@observation.id}
-
+  %h1 Muokkaa havaintoa
 .row
-  .span6
-    = form_for(@observation, :url =>{:action => 'update'}, :html => {:multipart => true}) do |f|
+  .span12
+    = form_for(@observation, :url =>{:action => 'update'}, :html => {:class => "form-inline", :multipart => true}) do |f|
+      %h2 Reitin tiedot
       = f.fields_for :route do |r|
         = r.label :route_number, "Reitin numero"
         = r.text_field :route_number
@@ -20,6 +20,7 @@
         = r.label :water_system_area, "Koko vesistön ala"
         = r.text_field :water_system_area
 
+      %h2 Havaintopaikan tiedot
       = f.fields_for :place do |p|
         = p.label :observation_place_number, "Reitin paikan numero"
         = p.text_field :observation_place_number
@@ -40,6 +41,7 @@
         = p.label :covering_area_end, "Koko vesistön kattavat paikat päättyen"
         = p.text_field :covering_area_end
 
+      %h2 Havainnon tiedot
       = f.label :year, "Vuosi"
       = f.text_field :year
       = f.label :observer_id, "Havainnoijatunnus"
@@ -68,3 +70,5 @@
       = f.check_box :waders_eurasian_bittern
       = f.label :passerine, "Laskettiinko varpuslinnut"
       = f.check_box :passerine
+
+      = f.submit "Tallenna", :name => nil, :class => 'btn btn-primary'
