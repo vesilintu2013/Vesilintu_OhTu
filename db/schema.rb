@@ -51,26 +51,30 @@ ActiveRecord::Schema.define(:version => 20130315091838) do
   end
 
   create_table "places", :force => true do |t|
-    t.integer "route_id"
-    t.integer "observation_place_number"
-    t.integer "nnn_coordinate"
-    t.integer "eee_coordinate"
-    t.integer "biotope_class"
-    t.string  "observation_place_name"
-    t.float   "place_area"
-    t.integer "area_covers_fully"
-    t.integer "covering_area_beginning"
-    t.integer "covering_area_end"
+    t.integer  "route_id"
+    t.integer  "observation_place_number"
+    t.integer  "nnn_coordinate"
+    t.integer  "eee_coordinate"
+    t.integer  "biotope_class"
+    t.string   "observation_place_name"
+    t.float    "place_area"
+    t.integer  "area_covers_fully"
+    t.integer  "covering_area_beginning"
+    t.integer  "covering_area_end"
+    t.datetime "created_at",               :null => false
+    t.datetime "updated_at",               :null => false
   end
 
   create_table "routes", :force => true do |t|
-    t.integer "route_number"
-    t.integer "year"
-    t.string  "municipal_code",                  :limit => 6
-    t.integer "route_representative_class"
-    t.integer "spot_observation_place_count"
-    t.integer "roaming_observation_place_count"
-    t.float   "water_system_area"
+    t.integer  "route_number"
+    t.integer  "year"
+    t.string   "municipal_code",                  :limit => 6
+    t.integer  "route_representative_class"
+    t.integer  "spot_observation_place_count"
+    t.integer  "roaming_observation_place_count"
+    t.float    "water_system_area"
+    t.datetime "created_at",                                   :null => false
+    t.datetime "updated_at",                                   :null => false
   end
 
 end
