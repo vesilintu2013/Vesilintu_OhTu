@@ -6,58 +6,58 @@
       %h2 Reitin tiedot
       = f.fields_for :route do |r|
         = r.label :route_number, "Reitin numero"
-        = r.text_field :route_number
+        = r.text_field :route_number, :class => "input-mini"
         = r.label :year, "Vuosi"
-        = r.text_field :year
+        = r.text_field :year, :class => "input-mini"
         = r.label :municipal_code, "Kuntakoodi"
-        = r.text_field :municipal_code
+        = r.text_field :municipal_code, :class => "input-small"
         = r.label :route_representative_class, "Reitin edustavuus"
         = r.text_field :route_representative_class
         = r.label :spot_observation_place_count, "Pistelaskentapaikkojen määrä reitillä"
-        = r.text_field :spot_observation_place_count
+        = r.text_field :spot_observation_place_count, :class => "input-mini"
         = r.label :roaming_observation_place_count, "Kiertolaskentapaikkojen määrä reitillä"
-        = r.text_field :roaming_observation_place_count
+        = r.text_field :roaming_observation_place_count, :class => "input-mini"
         = r.label :water_system_area, "Koko vesistön ala"
-        = r.text_field :water_system_area
+        = r.text_field :water_system_area, :class => "input-small"
 
       %h2 Havaintopaikan tiedot
       = f.fields_for :place do |p|
         = p.label :observation_place_number, "Reitin paikan numero"
-        = p.text_field :observation_place_number
+        = p.text_field :observation_place_number, :class => "input-mini"
         = p.label :nnn_coordinate, "NNN-koordinaatti"
-        = p.text_field :nnn_coordinate
+        = p.text_field :nnn_coordinate, :class => "input-mini"
         = p.label :eee_coordinate, "EEE-koordinaatti"
-        = p.text_field :eee_coordinate
+        = p.text_field :eee_coordinate, :class => "input-mini"
         = p.label :biotope_class, "Biotooppiluokka"
         = p.text_field :biotope_class
         = p.label :observation_place_name, "Havaintopaikan nimi"
         = p.text_field :observation_place_name
         = p.label :place_area, "Laskentapaikan ala"
-        = p.text_field :place_area
+        = p.text_field :place_area, :class => "input-small"
         = p.label :area_covers_fully, "Laskentapaikka kattoi koko vesistön"
         = p.text_field :area_covers_fully
         = p.label :covering_area_beginning, "Koko vesistön kattavat paikat alkaen"
-        = p.text_field :covering_area_beginning
+        = p.text_field :covering_area_beginning, :class => "input-mini"
         = p.label :covering_area_end, "Koko vesistön kattavat paikat päättyen"
-        = p.text_field :covering_area_end
+        = p.text_field :covering_area_end, :class => "input-mini"
 
       %h2 Havainnon tiedot
       = f.label :year, "Vuosi"
-      = f.text_field :year
+      = f.text_field :year, :class => "input-mini"
       = f.label :observer_id, "Havainnoijatunnus"
-      = f.text_field :observer_id
+      = f.text_field :observer_id, :class => "input-mini"
       = f.label :first_observation_date, "1. laskentakerran pvm"
-      = f.text_field :first_observation_date
+      = f.date_select :first_observation_date
       = f.label :second_observation_date, "2. laskentakerran pvm"
-      = f.text_field :second_observation_date
+      = f.date_select :second_observation_date
       = f.label :first_observation_hour, "1. laskentakerran aloitustunti"
-      = f.text_field :first_observation_hour
+      = f.text_field :first_observation_hour, :class => "input-mini"
       = f.label :second_observation_hour, "2. laskentakerran aloitustunti"
-      = f.text_field :second_observation_hour
+      = f.text_field :second_observation_hour, :class => "input-mini"
       = f.label :first_observation_duration, "1. laskentakerran kesto"
-      = f.text_field :first_observation_duration
+      = f.text_field :first_observation_duration, :class => "input-mini"
       = f.label :second_observation_duration, "2. laskentakerran kesto"
-      = f.text_field :second_observation_duration
+      = f.text_field :second_observation_duration, :class => "input-mini"
       = f.label :spot_counting, "Pistelaskenta"
       = f.check_box :spot_counting
       = f.label :binoculars, "Käytettiinkö kaukoputkea"
@@ -70,5 +70,13 @@
       = f.check_box :waders_eurasian_bittern
       = f.label :passerine, "Laskettiinko varpuslinnut"
       = f.check_box :passerine
+
+      %h2 Havainnot
+      = f.fields_for :counts do |c|
+        = c.fields_for :bird do |b|
+          = b.label :abbr, "Lyhenne"
+          = b.text_field :abbr, :readonly => true, :class => "input-mini"
+        = c.label :count, "Määrä"
+        = c.text_field :count, :class => "input-mini"
 
       = f.submit "Tallenna", :name => nil, :class => 'btn btn-primary'
