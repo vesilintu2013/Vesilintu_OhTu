@@ -1,0 +1,7 @@
+%li
+  = link_to "Reitti: #{observation.route_number}, 
+             Vuosi: #{observation.year},
+             Reitin paikan numero: #{observation.observation_place_number}",
+             observation
+  |
+  = link_to "Muokkaa", edit_observation_path(observation)

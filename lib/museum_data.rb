@@ -19,23 +19,71 @@ module MuseumData
   #   300 is added to all EEE-coordinates, so that they are consistent with the NNN-coordinates
   class Parser
 
-    def self.generate_models filename
+    def self.parse filename
       #TODO Rails model creation from the data below.
       #return nil
       data = parse_data filename
-      data.each do |observation|
-        model = Observation.new(generate_model_hash(observation))
-        if !model.valid?
-          # Do something smart here! Create good error messages!
-          puts "Error creating model, original data:"
-          puts observation[:original_data]
+      data.each do |data_hash|
+
+        observation, place, route = generate_models data_hash
+
+        if !route.new_record? || route.valid?
+          route.save! if route.new_record?
+          place.route_id = route.id
+          observation.route_id = route.id
         else
-          model.save!
-	  observation[:counts_data].keys.each do |key|
-            Count.create(:observation_id => model.id, :bird_id => Bird.find_by_abbr(key.to_s).id, :count => observation[:counts_data][key])
-	  end
+          generate_error_message data_hash[:original_data], route.errors
+          next
         end
+
+        if place.valid?
+          place.save!
+          observation.place_id = place.id
+        else
+          generate_error_message data_hash[:original_data], place.errors
+          next
+        end
+
+        if observation.valid?
+          observation.save!
+          generate_counts data_hash[:counts_data], observation.id
+        else
+          generate_error_message data_hash[:original_data], observation.errors
+          next
+        end
+
       end
+    end
+
+    private
+
+    def self.generate_error_message original_data, errors
+        puts "Error creating observation, original data:"
+        puts original_data
+        puts "Errors:"
+        puts errors
+    end
+
+    def self.generate_counts counts_data, id
+          counts_data.keys.each do |key|
+            Count.create(:observation_id => id, 
+                         :bird_id => Bird.find_by_abbr(key.to_s).id, 
+                         :count => counts_data[key])
+          end
+    end
+
+    def self.generate_models data_hash
+      observation_hash, place_hash, route_hash = generate_model_hashes(data_hash)
+
+      route = Route.where(:route_number => route_hash[:route_number], :year => route_hash[:year]).first
+      if route.nil?
+        route = Route.new(route_hash)
+      end
+      place = Place.new(place_hash)
+      observation = Observation.new(observation_hash)
+
+      [observation, place, route]
+
     end
 
     def self.parse_data filename
@@ -47,48 +95,63 @@ module MuseumData
       output
     end
 
-    private
 
-    def self.generate_model_hash observation
-      hash = {}
-      observation.keys.each do |key|
-        next if SKIP_FIELDS.include? key #Certain fields are not used directly.
-        hash[key] = observation[key]
+    def self.generate_model_hashes data_hash
+      observation_hash = {}
+      route_hash = {}
+      place_hash = {}
+
+      data_hash.keys.each do |key|
+        observation_hash[key] = data_hash[key] if OBSERVATIONS_FIELDS.include? key
+        route_hash[key] = data_hash[key] if ROUTES_FIELDS.include? key
+        place_hash[key] = data_hash[key] if PLACES_FIELDS.include? key
       end
 
-      begin
-        hash[:first_observation_date] = Date.new(hash[:year],observation[:first_observation_date_month],observation[:first_observation_date_day])
-      rescue
-        puts "PROBLEM, first date wrong: #{hash[:year]},#{observation[:first_observation_date_month]},#{observation[:first_observation_date_day]}"
-        puts "Original: #{observation[:original_data]}"
-      end
+      observation_hash[:first_observation_date] = generate_date data_hash, "first"
+      observation_hash[:second_observation_date] = generate_date data_hash, "second"
 
-      begin
-        hash[:second_observation_date] = Date.new(hash[:year],observation[:second_observation_date_month],observation[:second_observation_date_day])
-      rescue
-        puts "PROBLEM, second date wrong: #{hash[:year]},#{observation[:second_observation_date_month]},#{observation[:second_observation_date_day]}"
-        puts "Original: #{observation[:original_data]}"
-      end
 
-      covering_area = observation[:places_which_cover_whole_water_system]
-      unless covering_area == nil
-        if covering_area =~ /-/
-          covering_area = covering_area.split("-")
+      beginning_place, end_place = calculate_covering_area data_hash[:places_which_cover_whole_water_system]
+
+      place_hash[:covering_area_beginning] = beginning_place
+      place_hash[:covering_area_end] = end_place
+
+      observation_hash[:source] = "museum"
+
+      [observation_hash, place_hash, route_hash] 
+
+    end
+
+    def self.calculate_covering_area places_string
+
+      unless places_string == nil
+        if places_string =~ /-/
+          places_string = places_string.split("-")
         else
-          covering_area = covering_area.split(" ")
+          places_string = places_string.split(" ")
         end
       end
 
-      if covering_area != nil && covering_area.count == 2
-        hash[:covering_area_beginning] = covering_area.first.to_i
-        hash[:covering_area_end] = covering_area.last.to_i
+      if places_string != nil && places_string.count == 2
+        [places_string.first.to_i, places_string.last.to_i]
       else
-        hash[:covering_area_beginning] = nil
-        hash[:covering_area_end] = nil
+        [nil, nil]
       end
-      hash[:source] = "museum"
-      hash
+    end
 
+    def self.generate_date hash, prefix
+      date = nil
+      month = "#{prefix}_observation_date_month".to_sym
+      day = "#{prefix}_observation_date_day".to_sym
+
+      begin
+        date = Date.new(hash[:year],hash[month],hash[day])
+      rescue
+        puts "PROBLEM, first date wrong: #{hash[:year]},#{hash[month]},#{hash[day]}"
+        puts "Original: #{hash[:original_data]}"
+      end
+
+      return date
     end
 
     def self.parse_observation line
@@ -126,6 +189,7 @@ module MuseumData
 
       observation[:original_data] = line
       observation[:counts_data] = {}
+
       Bird.all.map{|b| b.abbr.to_sym}.each do |abbr_key|
         observation[:counts_data][abbr_key] = observation.delete(abbr_key) 
       end
@@ -187,6 +251,39 @@ module MuseumData
     :original_data,
     :counts_data,
     :roaming_counting]
+  OBSERVATIONS_FIELDS = [
+    :year,
+    :observer_id,
+    :first_observation_hour,
+    :first_observation_duration,
+    :second_observation_hour,
+    :second_observation_duration,
+    :spot_counting,
+    :binoculars,
+    :boat,
+    :gullbirds,
+    :waders_eurasian_bittern,
+    :passerine
+  ]
+
+  PLACES_FIELDS = [
+    :observation_place_number,
+    :nnn_coordinate,
+    :eee_coordinate,
+    :biotope_class,
+    :observation_place_name,
+    :place_area,
+    :area_covers_fully
+  ]
+  ROUTES_FIELDS = [
+    :year,
+    :route_number,
+    :municipal_code,
+    :route_representative_class,
+    :spot_observation_place_count,
+    :roaming_observation_place_count,
+    :water_system_area
+  ]
   DATA_FIELDS = [
     {
     :name => :route_number,

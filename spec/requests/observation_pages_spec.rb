@@ -94,7 +94,8 @@
   describe "search page" do
     before do
 			FactoryGirl.create(:observation, :year => "1987")
-			FactoryGirl.create(:observation, :year => "1988")
+			FactoryGirl.create(:observation, :year => "1988",
+                                       :observation_place_name => 'TESTIPAIKKA')
 			FactoryGirl.create(:observation, :year => "1999",
                                        :route_number => 6666)
 			FactoryGirl.create(:observation, :year => "2000",
@@ -126,6 +127,12 @@
       visit observations_search_path(:observation_place_number => '10')
       page.should have_selector('li', :text => '2002')
       page.should_not have_selector('li', :text => '2000')
+    end
+
+    it "should find results by observation place name" do
+      visit observations_search_path(:observation_place_name => 'Testipaikka')
+      page.should have_selector('li', :text => '1988')
+      page.should_not have_selector('li', :text => '1999')
     end
   end
 end

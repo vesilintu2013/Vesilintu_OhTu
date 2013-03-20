@@ -1,0 +1,43 @@
+.page-header
+  <h1>Havainnon tiedot</h1>
+
+.row
+  .span6
+    %h2 Perustiedot
+    = link_to "Muokkaa havaintoa", edit_observation_path(@observation)
+    %ul.unstyled
+      %li Reitin numero: #{@observation.route_number}
+      %li Vuosi: #{@observation.year}
+      %li Reitin paikan numero: #{@observation.observation_place_number}
+      %li Havainnoijatunnus: #{@observation.observer_id}
+      %li Kuntakoodi: #{@observation.municipal_code}
+      %li NNN-koordinaatti: #{@observation.nnn_coordinate}
+      %li EEE-koordinaatti: #{@observation.eee_coordinate}
+      %li Biotooppiluokka: #{@observation.biotope_class}
+      %li Reitin edustavuus: #{@observation.route_representative_class}
+      %li Pistelaskentapaikkojen määrä reitillä: #{@observation.spot_observation_place_count}
+      %li Kiertolaskentapaikkojen määrä reitillä: #{@observation.roaming_observation_place_count}
+      %li Havaintopaikan nimi: #{@observation.observation_place_name}
+      %li 1. laskentakerran pvm: #{@observation.first_observation_date}
+      %li 2. laskentakerran pvm: #{@observation.second_observation_date}
+      %li 1. laskentakerran aloitustunti: #{@observation.first_observation_hour}
+      %li 2. laskentakerran aloitustunti: #{@observation.second_observation_hour}
+      %li 1. laskentakerran kesto: #{@observation.first_observation_duration}
+      %li 2. laskentakerran kesto: #{@observation.second_observation_duration}
+      %li Laskentapaikan ala: #{@observation.place_area}
+      %li Koko vesistön ala: #{@observation.water_system_area}
+      %li Laskentapaikka kattoi koko vesistön: #{@observation.area_covers_fully}
+      %li Koko vesistön kattavat paikat alkaen: #{@observation.covering_area_beginning}
+      %li Koko vesistön kattavat paikat päättyen: #{@observation.covering_area_end}
+      %li Pistelaskenta? #{@observation.spot_counting}
+      %li Käytettiinkö kaukoputkea? #{@observation.binoculars}
+      %li Käytettiinkö venettä? #{@observation.boat}
+      %li Laskettiinko lokkilinnut: #{@observation.gullbirds}
+      %li Laskettiinko kahlaajat ja kaulushaikara: #{@observation.waders_eurasian_bittern}
+      %li Laskettiinko varpuslinnut: #{@observation.passerine}
+
+  .span6
+    %h2 Havaitut
+    %ul.unstyled
+      - @observation.counts.each do |count|
+        %li #{count.bird.abbr}: #{count.count}

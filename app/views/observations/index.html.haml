@@ -1,0 +1,11 @@
+.row
+  .row
+    .page-header
+      %h1 Kaikki havainnot
+    .span4
+      = render 'layouts/search'
+    .span8
+      - unless @observations.nil?
+        = will_paginate @observations
+        %ul.unstyled
+          = render @observations
