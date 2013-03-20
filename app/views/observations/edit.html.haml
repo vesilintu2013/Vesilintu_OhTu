@@ -1,1 +1,70 @@
-%h1 Edit page stub for observation #{@observation.id}
+.page-header
+  %h1 Muokkaa havaintoa  #{@observation.id}
+
+.row
+  .span6
+    = form_for(@observation, :url =>{:action => 'update'}, :html => {:multipart => true}) do |f|
+      = f.fields_for :route do |r|
+        = r.label :route_number, "Reitin numero"
+        = r.text_field :route_number
+        = r.label :year, "Vuosi"
+        = r.text_field :year
+        = r.label :municipal_code, "Kuntakoodi"
+        = r.text_field :municipal_code
+        = r.label :route_representative_class, "Reitin edustavuus"
+        = r.text_field :route_representative_class
+        = r.label :spot_observation_place_count, "Pistelaskentapaikkojen määrä reitillä"
+        = r.text_field :spot_observation_place_count
+        = r.label :roaming_observation_place_count, "Kiertolaskentapaikkojen määrä reitillä"
+        = r.text_field :roaming_observation_place_count
+        = r.label :water_system_area, "Koko vesistön ala"
+        = r.text_field :water_system_area
+
+      = f.fields_for :place do |p|
+        = p.label :observation_place_number, "Reitin paikan numero"
+        = p.text_field :observation_place_number
+        = p.label :nnn_coordinate, "NNN-koordinaatti"
+        = p.text_field :nnn_coordinate
+        = p.label :eee_coordinate, "EEE-koordinaatti"
+        = p.text_field :eee_coordinate
+        = p.label :biotope_class, "Biotooppiluokka"
+        = p.text_field :biotope_class
+        = p.label :observation_place_name, "Havaintopaikan nimi"
+        = p.text_field :observation_place_name
+        = p.label :place_area, "Laskentapaikan ala"
+        = p.text_field :place_area
+        = p.label :area_covers_fully, "Laskentapaikka kattoi koko vesistön"
+        = p.text_field :area_covers_fully
+        = p.label :covering_area_beginning, "Koko vesistön kattavat paikat alkaen"
+        = p.text_field :covering_area_beginning
+        = p.label :covering_area_end, "Koko vesistön kattavat paikat päättyen"
+        = p.text_field :covering_area_end
+
+      = f.label :year, "Vuosi"
+      = f.text_field :year
+      = f.label :observer_id, "Havainnoijatunnus"
+      = f.text_field :observer_id
+      = f.label :first_observation_date, "1. laskentakerran pvm"
+      = f.text_field :first_observation_date
+      = f.label :second_observation_date, "2. laskentakerran pvm"
+      = f.text_field :second_observation_date
+      = f.label :first_observation_hour, "1. laskentakerran aloitustunti"
+      = f.text_field :first_observation_hour
+      = f.label :second_observation_hour, "2. laskentakerran aloitustunti"
+      = f.text_field :second_observation_hour
+      = f.label :first_observation_duration, "1. laskentakerran kesto"
+      = f.text_field :first_observation_duration
+      = f.label :second_observation_duration, "2. laskentakerran kesto"
+      = f.text_field :second_observation_duration
+      = f.label :spot_counting, "Pistelaskenta"
+      = f.check_box :spot_counting
+      = f.label :binoculars, "Käytettiinkö kaukoputkea"
+      = f.check_box :binoculars
+      = f.label :boat, "Käytettiinkö venettä"
+      = f.check_box :boat
+      = f.label :gullbirds, "Laskettiinko lokkilinnut"
+      = f.check_box :gullbirds
+      = f.label :waders_eurasian_bittern, "Laskettiinko kahlaajat ja kaulushaikara"
+      = f.check_box :waders_eurasian_bittern
+      = f.label :passerine, "Laskettiinko varpuslinnut"
+      = f.check_box :passerine

@@ -3,6 +3,7 @@ class Observation < ActiveRecord::Base
   belongs_to :route
   belongs_to :place
   attr_accessible :year, :observer_id, :first_observation_date, :second_observation_date, :first_observation_hour, :first_observation_duration, :second_observation_hour, :second_observation_duration, :spot_counting, :binoculars, :boat, :gullbirds, :waders_eurasian_bittern, :passerine, :updated_at, :source
+  accepts_nested_attributes_for :route, :place, :counts
 
   # Receive a hash of parameters and construct a query using the search terms 
   # in the hash.
