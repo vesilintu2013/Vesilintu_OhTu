@@ -8,6 +8,7 @@ class CreateRoutesTable < ActiveRecord::Migration
       t.integer :spot_observation_place_count # <= tiedossa olevat
       t.integer :roaming_observation_place_count # <= tiedossa olevat
       t.float :water_system_area # myös null
+      t.timestamps
     end
   end
 
