@@ -2,6 +2,11 @@ require 'spec_helper'
 
 describe Observation do
   
+  it "should have a valid factory" do
+    observation = FactoryGirl.create(:observation)
+    observation.should be_valid
+  end
+
   describe "search method" do
     before do
       place_a = FactoryGirl.create(:place)

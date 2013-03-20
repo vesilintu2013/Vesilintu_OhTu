@@ -156,4 +156,41 @@
       page.should_not have_selector('li', :text => '1999')
     end
   end
+
+  describe "edit page" do
+    before do
+      route = FactoryGirl.create(:route)
+      place = FactoryGirl.create(:place)
+      @observation = FactoryGirl.create(:observation, :route_id => route.id, :place_id => place.id, :year => 1998)
+    end
+
+    it "should show the old attributes in the edit form" do
+      visit edit_observation_path(@observation)
+      page.should have_selector('input', :value => "1998")
+    end
+
+    it "should update attributes on the Observation model" do
+      visit edit_observation_path(@observation)
+      fill_in 'Havainnoijatunnus', with: "9000"
+      click_button "Tallenna"
+      page.should have_content "Muutokset tallennettu"
+      page.should have_content "Havainnoijatunnus: 9000"
+    end
+
+    it "should update attributes on the Route model" do
+      visit edit_observation_path(@observation)
+      fill_in "Reitin numero", with: "9000"
+      click_button "Tallenna"
+      page.should have_content "Muutokset tallennettu"
+      page.should have_content "Reitin numero: 9000"
+    end
+
+    it "should update attributes on the Place model" do
+      visit edit_observation_path(@observation)
+      fill_in "Havaintopaikan nimi", with: "Paskalampi"
+      click_button "Tallenna"
+      page.should have_content "Muutokset tallennettu"
+      page.should have_content "Havaintopaikan nimi: Paskalampi"
+    end
+  end
 end
