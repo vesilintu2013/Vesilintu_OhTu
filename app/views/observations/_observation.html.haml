@@ -1,7 +1,6 @@
 %li
-  = link_to "Reitti: #{observation.route_number}, 
+  = link_to "Reitti: #{observation.route.route_number}, 
              Vuosi: #{observation.year},
-             Reitin paikan numero: #{observation.observation_place_number}",
+             Reitin paikan numero: #{observation.place.observation_place_number}",
              observation
-  |
-  = link_to "Muokkaa", edit_observation_path(observation)
+  = link_to "( Muokkaa )", edit_observation_path(observation), :class => "edit_link"

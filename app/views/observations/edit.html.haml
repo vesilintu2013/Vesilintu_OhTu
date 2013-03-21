@@ -1,1 +1,135 @@
-%h1 Edit page stub for observation #{@observation.id}
+.page-header
+  %h1 Muokkaa havaintoa
+.row
+  = form_for(@observation, :url =>{:action => 'update'}, :html => {:class => "form-inline", :multipart => true}) do |f|
+    .span6
+      %h2 Reitin tiedot
+      = f.fields_for :route do |r|
+        .control-group
+          .controls.form-inline
+            = r.label :route_number, "Reitin numero"
+            = r.text_field :route_number, :class => "input-mini"
+            = r.label :year, "Vuosi"
+            = r.text_field :year, :class => "input-mini"
+        .control-group
+          .controls.form-inline
+            = r.label :municipal_code, "Tärkein havaintokunta (6 kirjaimen koodi)"
+            = r.text_field :municipal_code, :class => "input-small"
+        .control-group
+          .controls.form-inline
+            = r.label :route_representative_class, "Reitin edustavuus atlasruudun vesistötyyppien kannalta"
+            = r.text_field :route_representative_class
+        .control-group
+          %span.control-label Laskentapaikkojen määrä
+          .controls.form-inline
+            = r.label :spot_observation_place_count, "Pistelaskenta"
+            = r.text_field :spot_observation_place_count, :class => "input-mini"
+            = r.label :roaming_observation_place_count, "Kiertolaskenta"
+            = r.text_field :roaming_observation_place_count, :class => "input-mini"
+        .control-group
+          .controls.form-inline
+            = r.label :water_system_area, "Kohteen (järvi, lampi tms.) pinta-ala"
+            = r.text_field :water_system_area, :class => "input-small"
+
+      %h2 Laskentapaikan tiedot
+      = f.fields_for :place do |p|
+        .control-group
+          .controls.form-inline
+            = p.label :observation_place_number, "Paikan numero"
+            = p.text_field :observation_place_number, :class => "input-mini"
+        .control-group
+          %span.control-label Yhtenäiskoordinaatit (10 x 10 km)
+          .controls.form-inline
+            = p.label :nnn_coordinate, "NNN"
+            = p.text_field :nnn_coordinate, :class => "input-mini"
+            = p.label :eee_coordinate, "EEE"
+            = p.text_field :eee_coordinate, :class => "input-mini"
+        .control-group
+          .control.form-inline
+            = p.label :biotope_class, "Biotooppiluokka"
+            = p.text_field :biotope_class
+        .control-group
+          .controls.form-inline
+            = p.label :observation_place_name, "Laskentapaikan nimi"
+            = p.text_field :observation_place_name
+        .control-group
+          .control.form-inline
+            = p.label :place_area, "Laskentapaikan ala"
+            = p.text_field :place_area, :class => "input-small"
+        .control-group
+          .control.form-inline
+            = p.label :area_covers_fully, "Laskentapaikka kattoi koko vesistön", :value => '1'
+            = p.radio_button :area_covers_fully, '1'
+            = p.label :area_covers_fully, "Laskentapaikka ei kattanut koko vesistöä", :value => '0'
+            = p.radio_button :area_covers_fully, '0'
+            = p.label :area_covers_fully, "Laskentapaikat XX-YY kattoivat koko vesistön", :value => '2'
+            = p.radio_button :area_covers_fully, '2'
+        .control-group
+          %span.control-label Merkitse seuraaviin kenttiin mitkä paikat kattoivat koko vesistön jos valitsit viimeisen vaihtoehdon yllä
+          .controls.form-inline
+            = p.label :covering_area_beginning, "Koko vesistön kattavat paikat alkaen"
+            = p.text_field :covering_area_beginning, :class => "input-mini"
+            = p.label :covering_area_end, "Koko vesistön kattavat paikat päättyen"
+            = p.text_field :covering_area_end, :class => "input-mini"
+    .span6
+      %h2 Laskennan tiedot
+      .control-group
+        .controls.form-inline
+          = f.label :year, "Vuosi"
+          = f.text_field :year, :class => "input-mini"
+          = f.label :observer_id, "Havainnoijanumero"
+          = f.text_field :observer_id, :class => "input-mini"
+      .control-group
+        %span.control-label Laskennan tyyppi
+        .controls.form-inline
+          = f.label :spot_counting, "Pistelaskenta", :value => 'true'
+          = f.radio_button :spot_counting, 'true'
+          = f.label :spot_counting, "Kiertolaskenta", :value => 'false'
+          = f.radio_button :spot_counting, 'false'
+      .control-group
+        %span.control-label 1. laskennan ajankohta ja kesto
+        .controls
+          = f.date_select :first_observation_date
+          .control-group
+            .controls.form-inline
+              = f.label :first_observation_hour, "Aloitustunti"
+              = f.text_field :first_observation_hour, :class => "input-mini"
+              = f.label :first_observation_duration, "Kesto"
+              = f.text_field :first_observation_duration, :class => "input-mini"
+      .control-group
+        %span.control-label 2. laskennan ajankohta ja kesto
+        .controls.form-inline
+          = f.date_select :second_observation_date
+          .control-group
+            .controls.form-inline
+              = f.label :second_observation_hour, "Aloitustunti"
+              = f.text_field :second_observation_hour, :class => "input-mini"
+              = f.label :second_observation_duration, "Kesto"
+              = f.text_field :second_observation_duration, :class => "input-mini"
+      .control-group
+        %span.control-label Käytettiinkö laskennassa
+        .controls.form-inline
+          = f.label :boat, "Venettä"
+          = f.check_box :boat
+          = f.label :binoculars, "Kaukoputkea"
+          = f.check_box :binoculars
+      .control-group
+        %span.control-label Laskettiinko myös
+        .controls.form-inline
+          = f.label :gullbirds, "Lokkilinnut"
+          = f.check_box :gullbirds
+          = f.label :waders_eurasian_bittern, "Kahlaajat ja kaulushaikara"
+          = f.check_box :waders_eurasian_bittern
+          = f.label :passerine, "Varpuslinnut"
+          = f.check_box :passerine
+
+    .span12
+      %h2 Havainnot
+      = f.fields_for :counts do |c|
+        = c.fields_for :bird do |b|
+          = b.text_field :abbr, :readonly => true, :class => "input-mini"
+        = c.text_field :count, :class => "input-mini"
+
+      .control-group
+        .controls.form-inline
+          = f.submit "Tallenna", :name => nil, :class => 'btn btn-primary'

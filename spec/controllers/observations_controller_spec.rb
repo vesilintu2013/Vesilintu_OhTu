@@ -93,7 +93,8 @@ describe ObservationsController do
 
   describe "accessing the search observations page" do
     before do
-      FactoryGirl.create(:observation, :route_number => "9005")
+      route = FactoryGirl.create(:route, :route_number => "9005")
+      FactoryGirl.create(:observation, :route_id => route.id)
     end
 	  
     it "should call the observation search method with right params" do
