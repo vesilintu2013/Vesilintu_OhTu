@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130315091838) do
+ActiveRecord::Schema.define(:version => 20130321141356) do
 
   create_table "birds", :force => true do |t|
     t.string   "name"
@@ -63,6 +63,8 @@ ActiveRecord::Schema.define(:version => 20130315091838) do
     t.integer  "covering_area_end"
     t.datetime "created_at",               :null => false
     t.datetime "updated_at",               :null => false
+    t.string   "source"
+    t.string   "rktl_munincipal_code"
   end
 
   create_table "routes", :force => true do |t|
