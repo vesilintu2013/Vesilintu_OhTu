@@ -126,8 +126,7 @@
     .span12
       %h2 Havainnot
       = f.fields_for :counts do |c|
-        = c.fields_for :bird do |b|
-          = b.text_field :abbr, :readonly => true, :class => "input-mini"
+        = c.text_field :abbr, :readonly => true, :class => "input-mini"
         = c.text_field :count, :class => "input-mini"
 
       .control-group

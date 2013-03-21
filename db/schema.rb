@@ -11,12 +11,13 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130321141356) do
+ActiveRecord::Schema.define(:version => 20130321204725) do
 
   create_table "counts", :force => true do |t|
     t.integer "observation_id"
     t.string  "abbr"
     t.integer "count"
+    t.string  "pre_result"
   end
 
   create_table "observations", :force => true do |t|

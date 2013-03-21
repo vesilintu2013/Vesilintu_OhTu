@@ -82,6 +82,7 @@ module MuseumData
         route = Route.new(route_hash)
       end
       place = Place.new(place_hash)
+      place.source = "museum"
       observation = Observation.new(observation_hash)
 
       [observation, place, route]

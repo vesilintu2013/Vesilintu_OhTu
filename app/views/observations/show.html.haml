@@ -3,26 +3,33 @@
 
 .row
   .span6
-    %h2 Reitin tiedot
-    %ul.unstyled
-      %li Reitin numero: #{@observation.route.route_number}
-      %li Kuntakoodi: #{@observation.route.municipal_code}
-      %li Reitin edustavuus: #{@observation.route.route_representative_class}
-      %li Pistelaskentapaikkojen määrä reitillä: #{@observation.route.spot_observation_place_count}
-      %li Kiertolaskentapaikkojen määrä reitillä: #{@observation.route.roaming_observation_place_count}
-      %li Koko vesistön ala: #{@observation.route.water_system_area}
+    -if @observation.source == "museum"
+      %h2 Reitin tiedot
+      %ul.unstyled
+        %li Reitin numero: #{@observation.route.route_number}
+        %li Kuntakoodi: #{@observation.route.municipal_code}
+        %li Reitin edustavuus: #{@observation.route.route_representative_class}
+        %li Pistelaskentapaikkojen määrä reitillä: #{@observation.route.spot_observation_place_count}
+        %li Kiertolaskentapaikkojen määrä reitillä: #{@observation.route.roaming_observation_place_count}
+        %li Koko vesistön ala: #{@observation.route.water_system_area}
     
     %h2 Havaintopaikan tiedot
     %ul.unstyled
-      %li Reitin paikan numero: #{@observation.place.observation_place_number}
+      -if @observation.source == "museum"
+        %li Reitin paikan numero: #{@observation.place.observation_place_number}
+      -else
+        %li Reitin numero: #{@observation.place.observation_place_number}
+        %li Kunta: #{@observation.place.rktl_munincipal_code}
       %li NNN-koordinaatti: #{@observation.place.nnn_coordinate}
       %li EEE-koordinaatti: #{@observation.place.eee_coordinate}
       %li Biotooppiluokka: #{@observation.place.biotope_class}
-      %li Havaintopaikan nimi: #{@observation.place.observation_place_name}
+      -if @observation.source == "museum"
+        %li Havaintopaikan nimi: #{@observation.place.observation_place_name}
       %li Laskentapaikan ala: #{@observation.place.place_area}
-      %li Laskentapaikka kattoi koko vesistön: #{@observation.place.area_covers_fully}
-      %li Koko vesistön kattavat paikat alkaen: #{@observation.place.covering_area_beginning}
-      %li Koko vesistön kattavat paikat päättyen: #{@observation.place.covering_area_end}
+      -if @observation.source == "museum"
+        %li Laskentapaikka kattoi koko vesistön: #{@observation.place.area_covers_fully}
+        %li Koko vesistön kattavat paikat alkaen: #{@observation.place.covering_area_beginning}
+        %li Koko vesistön kattavat paikat päättyen: #{@observation.place.covering_area_end}
       
   .span6
     %h2 Perustiedot
@@ -42,8 +49,12 @@
       %li Laskettiinko lokkilinnut: #{@observation.gullbirds}
       %li Laskettiinko kahlaajat ja kaulushaikara: #{@observation.waders_eurasian_bittern}
       %li Laskettiinko varpuslinnut: #{@observation.passerine}
+      %li Lähde: #{@observation.source}
 
     %h2 Havainnot
     %ul.unstyled
       - @observation.counts.each do |count|
-        %li #{count.bird.abbr}: #{count.count}
+        -if @observation.source == "museum"
+          %li #{count.abbr}: #{count.count}
+        -else
+          %li #{count.abbr}: #{count.pre_result}
