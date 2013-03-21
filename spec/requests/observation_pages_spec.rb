@@ -171,7 +171,7 @@
 
     it "should update attributes on the Observation model" do
       visit edit_observation_path(@observation)
-      fill_in 'Havainnoijatunnus', with: "9000"
+      fill_in 'Havainnoijanumero', with: "9000"
       click_button "Tallenna"
       page.should have_content "Muutokset tallennettu"
       page.should have_content "Havainnoijatunnus: 9000"
@@ -187,7 +187,7 @@
 
     it "should update attributes on the Place model" do
       visit edit_observation_path(@observation)
-      fill_in "Havaintopaikan nimi", with: "Paskalampi"
+      fill_in "Laskentapaikan nimi", with: "Paskalampi"
       click_button "Tallenna"
       page.should have_content "Muutokset tallennettu"
       page.should have_content "Havaintopaikan nimi: Paskalampi"
