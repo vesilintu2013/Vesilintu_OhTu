@@ -23,35 +23,37 @@ module MuseumData
       #TODO Rails model creation from the data below.
       #return nil
       data = parse_data filename
-      data.each do |data_hash|
+      ActiveRecord::Base.transaction do
+        data.each do |data_hash|
 
-        observation, place, route = generate_models data_hash
+          observation, place, route = generate_models data_hash
 
-        if !route.new_record? || route.valid?
-          route.save! if route.new_record?
-          place.route_id = route.id
-          observation.route_id = route.id
-        else
-          generate_error_message data_hash[:original_data], route.errors
-          next
+          if !route.new_record? || route.valid?
+            route.save! if route.new_record?
+            place.route_id = route.id
+            observation.route_id = route.id
+          else
+            generate_error_message data_hash[:original_data], route.errors
+            next
+          end
+
+          if place.valid?
+            place.save!
+            observation.place_id = place.id
+          else
+            generate_error_message data_hash[:original_data], place.errors
+            next
+          end
+
+          if observation.valid?
+            observation.save!
+            generate_counts data_hash[:counts_data], observation.id
+          else
+            generate_error_message data_hash[:original_data], observation.errors
+            next
+          end
+
         end
-
-        if place.valid?
-          place.save!
-          observation.place_id = place.id
-        else
-          generate_error_message data_hash[:original_data], place.errors
-          next
-        end
-
-        if observation.valid?
-          observation.save!
-          generate_counts data_hash[:counts_data], observation.id
-        else
-          generate_error_message data_hash[:original_data], observation.errors
-          next
-        end
-
       end
     end
 
@@ -65,11 +67,11 @@ module MuseumData
     end
 
     def self.generate_counts counts_data, id
-          counts_data.keys.each do |key|
-            Count.create(:observation_id => id, 
-                         :bird_id => Bird.find_by_abbr(key.to_s).id, 
-                         :count => counts_data[key])
+          counts = counts_data.keys.map do |key|
+            "(#{id},'#{key}',#{counts_data[key].nil? ? "NULL" : counts_data[key]})"
           end
+          sql = "INSERT INTO counts ('observation_id','abbr','count') values #{counts.join(",")}"
+          ActiveRecord::Base.connection.execute(sql)
     end
 
     def self.generate_models data_hash
@@ -190,7 +192,7 @@ module MuseumData
       observation[:original_data] = line
       observation[:counts_data] = {}
 
-      Bird.all.map{|b| b.abbr.to_sym}.each do |abbr_key|
+      Bird.abbreviations.each do |abbr_key|
         observation[:counts_data][abbr_key] = observation.delete(abbr_key) 
       end
 
