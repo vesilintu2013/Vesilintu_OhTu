@@ -6,12 +6,12 @@
       %ul.nav.nav-tabs
         - if current_page?(root_path)
           %li.active
-            = link_to "/" do
+            = link_to root_path do
               %i.icon-home
               Etusivu
         - else
           %li
-            = link_to "/" do
+            = link_to root_path do
               %i.icon-home
               Etusivu
         -if current_page?(observations_search_path)
