@@ -5,6 +5,21 @@ class Observation < ActiveRecord::Base
   attr_accessible :year, :observer_id, :first_observation_date, :second_observation_date, :first_observation_hour, :first_observation_duration, :second_observation_hour, :second_observation_duration, :spot_counting, :binoculars, :boat, :gullbirds, :waders_eurasian_bittern, :passerine, :updated_at, :source, :route_attributes, :place_attributes, :counts_attributes
   accepts_nested_attributes_for :route, :place, :counts
 
+  validates :year, :numericality => { :greater_than_or_equal_to => 1986, :less_than_or_equal_to => 2013 }
+  validates :first_observation_hour, :numericality => { :only_integer => true },
+                                     :inclusion => 0..23,
+                                     :allow_blank => true,
+                                     :allow_nil => true
+  validates :second_observation_hour, :numericality => { :only_integer => true },
+                                      :inclusion => 0..23,
+                                      :allow_blank => true,
+                                      :allow_nil => true
+  validates :first_observation_duration, :inclusion => 0..999,
+                                         :allow_blank => true,
+                                         :allow_nil => true
+  validates :second_observation_duration, :inclusion => 0..999,
+                                          :allow_blank => true,
+                                          :allow_nil => true
   # Receive a hash of parameters and construct a query using the search terms 
   # in the hash.
   def self.search(search)

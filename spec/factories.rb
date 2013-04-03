@@ -6,8 +6,8 @@ FactoryGirl.define do
 		second_observation_date				nil
 		first_observation_hour				"7"
 		first_observation_duration		"5"
-		second_observation_hour		 	 	"0"
-		second_observation_duration		"0"
+		second_observation_hour		 	 	" "
+		second_observation_duration		" "
 		spot_counting									true
 		binoculars										false
 		boat													false
