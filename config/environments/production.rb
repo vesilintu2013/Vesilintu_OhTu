@@ -67,3 +67,4 @@ VesilintuOhtu::Application.configure do
   config.relative_url_root = "/vesilintu"
   config.assets.prefix = '/vesilintu/assets'
 end
+ADMIN_PASSWORD = ""
