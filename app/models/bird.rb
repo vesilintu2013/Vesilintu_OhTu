@@ -1,4 +1,39 @@
 class Bird < ActiveRecord::Base
-  attr_accessible :abbr, :name
-  has_many :counts
+  def self.abbreviations
+    return [:anapla,
+      :anacre,
+      :anaacu,
+      :anacly,
+      :aytfer,
+      :buccla,
+      :mermer,
+      :fulatr,
+      :gavarc,
+      :podcri,
+      :podgri,
+      :podaur,
+      :cygcyg,
+      :ansfab,
+      :bracan,
+      :anapen,
+      :anaque,
+      :aytful,
+      :melfus,
+      :merser,
+      :meralb,
+      :larmin,
+      :larrid,
+      :larcan,
+      :stehir,
+      :galgal,
+      :trigla,
+      :trineb,
+      :trioch,
+      :acthyp,
+      :numarq,
+      :vanvan,
+      :botste,
+      :embsch,
+      :acrsch]
+  end
 end

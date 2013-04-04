@@ -1,6 +1,6 @@
         # encoding: UTF-8
         require 'spec_helper'
-
+        
         describe "Observation pages" do
           subject { page }
 
@@ -9,12 +9,12 @@
               route1 = FactoryGirl.create(:route, :year => "1987")
               route2 = FactoryGirl.create(:route, :year => "1988")
               route3 = FactoryGirl.create(:route, :year => "2000")
-              place1 = FactoryGirl.create(:place, :route_id => route1.id) 
-              place2 = FactoryGirl.create(:place, :route_id => route2.id) 
-              place3 = FactoryGirl.create(:place, :route_id => route3.id) 
-              FactoryGirl.create(:observation, :year => route1.year, :route_id => route1.id, :place_id => place1.id)
-              FactoryGirl.create(:observation, :year => route2.year, :route_id => route2.id, :place_id => place2.id)
-              FactoryGirl.create(:observation, :year => route3.year, :route_id => route3.id, :place_id => place3.id)
+              place1 = FactoryGirl.create(:place, :route_id => route1.id, :source => "museum") 
+              place2 = FactoryGirl.create(:place, :route_id => route2.id, :source => "museum") 
+              place3 = FactoryGirl.create(:place, :route_id => route3.id, :source => "museum") 
+              FactoryGirl.create(:observation, :year => route1.year, :route_id => route1.id, :place_id => place1.id, :source => "museum")
+              FactoryGirl.create(:observation, :year => route2.year, :route_id => route2.id, :place_id => place2.id, :source => "museum")
+              FactoryGirl.create(:observation, :year => route3.year, :route_id => route3.id, :place_id => place3.id, :source => "museum")
               visit observations_path
            end
 
@@ -31,8 +31,7 @@
             route = FactoryGirl.create(:route)
             place = FactoryGirl.create(:place, :route_id => route.id)
             observation = FactoryGirl.create(:observation, :route_id => route.id, :place_id => place.id)
-            bird = FactoryGirl.create(:bird)
-            count = FactoryGirl.create(:count, :observation_id => observation.id, :bird_id => bird.id, :count => "10")
+            count = FactoryGirl.create(:count, :observation_id => observation.id, :abbr => "anapla", :count => "10")
             
             before do
               visit observation_path(observation)
@@ -89,11 +88,11 @@
             it { should have_selector('li', :text =>
 		            "Pistelaskenta? #{observation.spot_counting}") }
             it { should have_selector('li', :text =>
-		            "Käytettiinkö kaukoputkea? #{observation.binoculars}") }
+		            "Käytettiinkö kiikaria? #{observation.binoculars}") }
             it { should have_selector('li', :text =>
 		            "Käytettiinkö venettä? #{observation.boat}") }
             it { should have_selector('li', :text =>
-                "#{bird.abbr}: 10") }
+                "anapla: 10") }
 	end
 
   describe "search page" do
