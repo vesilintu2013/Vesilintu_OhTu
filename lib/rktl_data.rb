@@ -152,12 +152,19 @@ module RktlData
         if observation.valid?
 
           observation.save!
-          counts = count_hashes.map do |count_hash|
-            "(#{observation.id},'#{count_hash[:abbr]}','#{count_hash[:hav].nil? ? "NULL" : count_hash[:hav]}')"
-
+          #This is a dumb hack. We need to do this because of sqlite, once we get a proper database we can do a mass insert.
+          count_hashes.each do |count_hash|
+            values = "(#{observation.id},'#{count_hash[:abbr]}','#{count_hash[:hav].nil? ? "NULL" : count_hash[:hav]}')"
+            sql = "INSERT INTO counts ('observation_id','abbr','pre_result') values #{values}"
+            ActiveRecord::Base.connection.execute(sql)
           end
-          sql = "INSERT INTO counts ('observation_id','abbr','pre_result') values #{counts.join(",")}"
-          ActiveRecord::Base.connection.execute(sql)
+          #counts = count_hashes.map do |count_hash|
+          #  "(#{observation.id},'#{count_hash[:abbr]}','#{count_hash[:hav].nil? ? "NULL" : count_hash[:hav]}')"
+
+          #end
+          #sql = "INSERT INTO counts ('observation_id','abbr','pre_result') values #{counts.join(",")}"
+          #ActiveRecord::Base.connection.execute(sql)
+
         else
           #ERRORZ
           next
@@ -224,7 +231,7 @@ module RktlData
     def self.flatten_group group
       birds = []
       group.each do |obs|
-        birds << {:abbr => obs[:laji], :hav => obs[:hav]}
+        birds << {:abbr => bird_id_to_abbr(obs[:laji]), :hav => obs[:hav]}
       end
       flattened_group = {}
       group.first.keys.each do |key|
@@ -235,8 +242,42 @@ module RktlData
 
     end
 
-
-
-
+    def self.bird_id_to_abbr id
+      BIRD_IDS[id.to_i]
+    end
+    BIRD_IDS = {11 => "anapla",
+      12 => "anacre",
+      13 => "anapen",
+      14 => "anaacu",
+      15 => "anacly",
+      16 => "anaque",
+      17 => "anastr",
+      18 => "tadtad",
+      21 => "aytful",
+      22 => "aytmar",
+      23 => "aytfer",
+      31 => "buccla",
+      32 => "clahye",
+      41 => "melfus",
+      42 => "melnig",
+      43 => "sommol",
+      51 => "mermer",
+      52 => "merser",
+      53 => "meralb",
+      61 => "ansans",
+      62 => "ansfab",
+      63 => "ansery",
+      64 => "bracan",
+      65 => "braleu",
+      71 => "cygolo",
+      72 => "cygcyg",
+      81 => "gavarc",
+      82 => "gavste",
+      83 => "podcri",
+      84 => "podgri",
+      85 => "podaur",
+      86 => "tacruf",
+      91 => "fulatr",
+      98 => "others"}
   end
 end

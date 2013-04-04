@@ -67,11 +67,17 @@ module MuseumData
     end
 
     def self.generate_counts counts_data, id
-          counts = counts_data.keys.map do |key|
-            "(#{id},'#{key}',#{counts_data[key].nil? ? "NULL" : counts_data[key]})"
-          end
-          sql = "INSERT INTO counts ('observation_id','abbr','count') values #{counts.join(",")}"
-          ActiveRecord::Base.connection.execute(sql)
+      #counts = counts_data.keys.map do |key|
+      #  "(#{id},'#{key}',#{counts_data[key].nil? ? "NULL" : counts_data[key]})"
+      #end
+      #sql = "INSERT INTO counts ('observation_id','abbr','count') values #{counts.join(",")}"
+      #ActiveRecord::Base.connection.execute(sql)
+      #More ugly hacks because of sqlite!
+      counts_data.keys.each do |key|
+        values = "(#{id},'#{key}',#{counts_data[key].nil? ? "NULL" : counts_data[key]})"
+        sql = "INSERT INTO counts ('observation_id','abbr','count') values #{values}"
+        ActiveRecord::Base.connection.execute(sql)
+      end
     end
 
     def self.generate_models data_hash
