@@ -9,10 +9,11 @@ module RktlData
     def self.parse pair_data_filename, places_data_filename, counts_upto_2011_filename, counts_2012_filename
       data = parse_files pair_data_filename, places_data_filename, counts_upto_2011_filename, counts_2012_filename
 
-      #create_places data[:places_data]
-
-      combined_counts_data = combine_counts_data data[:counts_upto_2011_data], data[:counts_2012_data]
-      create_observations data[:pairs_data], combined_counts_data
+      ActiveRecord::Base.transaction do
+        create_places data[:places_data]
+        combined_counts_data = combine_counts_data data[:counts_upto_2011_data], data[:counts_2012_data]
+        create_observations data[:pairs_data], combined_counts_data
+      end
     end
 
     private
@@ -58,12 +59,15 @@ module RktlData
         if observation.valid?
 
           observation.save!
-          count_hashes.each do |count_hash|
-            count = Count.new(count)
-            count.observation_id = observation.id
-            count.save if count.valid?
+          counts = count_hashes.map do |count_hash|
+            "(#{observation.id},'#{count_hash[:abbr]}','#{count_hash[:hav].nil? ? "NULL" : count_hash[:hav]}')"
+            #Count = Count.new(count_hash)
+            #count.observation_id = observation.id
+            #count.save if count.valid?
 
           end
+          sql = "INSERT INTO counts ('observation_id','abbr','pre_result') values #{counts.join(",")}"
+          ActiveRecord::Base.connection.execute(sql)
         else
           #ERRORZ
           next
@@ -93,13 +97,7 @@ module RktlData
       observation_hash[:binoculars] = (obs[:binoculars] == 1)
       observation_hash[:source] = "rktl"
 
-
-      birds = []
-      obs[:results].each do |result|
-        birds << {:bird_code => result[:laji], :count=>result[:count]}
-      end
-
-      [observation_hash, birds]
+      [observation_hash, obs[:results]]
     end
 
     def self.group_observations pairs_data, combined_counts
@@ -136,7 +134,7 @@ module RktlData
     def self.flatten_group group
       birds = []
       group.each do |obs|
-        birds << {:laji => obs[:laji], :count => obs[:result]}
+        birds << {:abbr => obs[:laji], :hav => obs[:hav]}
       end
       flattened_group = {}
       group.first.keys.each do |key|

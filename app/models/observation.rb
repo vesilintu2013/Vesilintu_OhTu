@@ -17,6 +17,8 @@ class Observation < ActiveRecord::Base
               search['observer_id'].blank?
     result = result.scoped(:conditions => { :routes => { :route_number => search['route_number'] } }) unless
               search['route_number'].blank?
+    result = result.scoped(:conditions => { :source => search['source'] }) unless
+              search['source'].blank?
     result = result.where("lower(places.observation_place_name) = lower(?)",  search['observation_place_name'] ) unless
               search['observation_place_name'].blank?
     return result

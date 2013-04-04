@@ -11,21 +11,13 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130321141356) do
-
-  create_table "birds", :force => true do |t|
-    t.string   "name"
-    t.string   "abbr"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
-  end
+ActiveRecord::Schema.define(:version => 20130321204725) do
 
   create_table "counts", :force => true do |t|
-    t.integer  "observation_id"
-    t.integer  "bird_id"
-    t.integer  "count"
-    t.datetime "created_at",     :null => false
-    t.datetime "updated_at",     :null => false
+    t.integer "observation_id"
+    t.string  "abbr"
+    t.integer "count"
+    t.string  "pre_result"
   end
 
   create_table "observations", :force => true do |t|
