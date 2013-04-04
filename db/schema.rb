@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130321204725) do
+ActiveRecord::Schema.define(:version => 20130404111902) do
 
   create_table "counts", :force => true do |t|
     t.integer "observation_id"
@@ -40,6 +40,7 @@ ActiveRecord::Schema.define(:version => 20130321204725) do
     t.string   "source"
     t.datetime "created_at",                  :null => false
     t.datetime "updated_at",                  :null => false
+    t.boolean  "rktl_telescope"
   end
 
   create_table "places", :force => true do |t|
@@ -57,6 +58,17 @@ ActiveRecord::Schema.define(:version => 20130321204725) do
     t.datetime "updated_at",               :null => false
     t.string   "source"
     t.string   "rktl_munincipal_code"
+    t.integer  "rktl_pog_society_id"
+    t.string   "rktl_town"
+    t.string   "rktl_zip"
+    t.string   "rktl_it"
+    t.integer  "rktl_map_number"
+    t.string   "rktl_map_name"
+    t.float    "rktl_shore_length"
+    t.integer  "rktl_pog_zone_id"
+    t.string   "rktl_project"
+    t.boolean  "rktl_place_not_counted"
+    t.string   "rktl_other"
   end
 
   create_table "routes", :force => true do |t|

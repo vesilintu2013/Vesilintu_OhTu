@@ -1,3 +1,4 @@
+# encoding: utf-8
 module RktlData
   class Parser
 
@@ -18,22 +19,113 @@ module RktlData
 
     private
 
+    def self.create_places places_data
+      places_data.each do |data|
+        place_hash = generate_place_hash data
+        place = Place.new(place_hash)
+
+        if place.valid?
+          place.save
+        else
+          #TODO Generate errorz
+          next
+        end
+      end
+    end
+
+    def self.generate_place_hash data
+      hash = {}
+      hash[:observation_place_number] = data[:pnro]
+      hash[:nnn_coordinate] = data[:y] #TODO convert format!
+      hash[:eee_coordinate] = data[:x] #TODO convert format!
+      hash[:biotope_class] = data[:type]
+      hash[:place_area] = data[:sekala]
+      hash[:rktl_munincipal_code] = data[:kunta]
+      hash[:rktl_pog_society_id] = data[:rhynro]
+      hash[:rktl_town] = data[:kyla]
+      hash[:rktl_zip] = data[:po]
+      hash[:rktl_it] = data[:it]
+      hash[:rktl_map_number] = data[:karnro]
+      hash[:rktl_map_name] = data[:karnim]
+      hash[:rktl_shore_length] = data[:sek_ranta]
+      hash[:rktl_pog_zone_id] = data[:projekti]
+      hash[:rktl_project] = data[:projekti]
+      hash[:rktl_place_not_counted] = data[:pistetta_ei_lasketa] #Boolean
+      hash[:rktl_other] = data[:huom]
+      hash[:source] = "rktl"
+      hash
+    end
+
+    def self.parse_files pair_data_filename, places_data_filename, counts_upto_2011_filename, counts_2012_filename
+      data = {}
+      data[:pairs_data] = parse_file " ", pair_data_filename
+      data[:places_data] = parse_file ";", places_data_filename
+      data[:counts_upto_2011_data] = parse_file ";", counts_upto_2011_filename
+      data[:counts_2012_data] = parse_file ";", counts_2012_filename
+
+      data
+    end
+
+    def self.parse_file separator, filename
+      output = []
+      lines = File.readlines(filename).map{|s| s.gsub("\n","").split(separator)}
+      keys = lines.delete_at(0).map{|s| s.gsub("\"","").gsub("ä","a").downcase.to_sym}
+      lines.each do |line|
+        data = {}
+        line = convert_space_separated line if separator == " "
+        line.map{|s| s.gsub("\"","")}.each_with_index do |value, i|
+          value = value.to_i if value =~ /\A\d*\z/
+          value = value.to_f if value =~ /\A\d*,\d*\z/
+          data[keys[i]] = value
+        end
+        output << data
+      end
+      output
+    end
+
+    def self.convert_space_separated array
+      output = []
+      index = 0
+      while(index < array.length)
+        if(array[index] =~ /\A"\w*\z/)
+          value = array[index]
+          index += 1
+          while(array[index] !~ /\A\w*"\z/)
+            value = "#{value} #{array[index]}"
+            index += 1
+          end
+          value = "#{value} #{array[index]}"
+          value.gsub!("\"","")
+          output << value
+        else
+          output << array[index]
+        end
+        index += 1
+      end
+
+      output
+    end
+
     def self.combine_counts_data upto_2011_data, year_2012_data
       combined = []
       upto_2011_data.each do |count|
+        binoculars = (count[:lasit] == 1 ? 1 : 0)
+        telescope = (count[:lasit] == 2 ? 1 : 0)
         combined << {:pnro => count[:pnro], 
           :census => 1, 
           :pvm => (count[:pvm1].nil? ? nil : count[:pvm1].split(" ").first), 
           :hour => count[:hh1], 
           :duration => count[:kesto1],
-          :binoculars => count[:lasit]}
+          :binoculars => binoculars,
+          :rktl_telescope => telescope}
 
         combined << {:pnro => count[:pnro], 
           :census => 2, 
           :pvm => (count[:pvm2].nil? ? nil : count[:pvm2].split(" ").first), 
           :hour => count[:hh2], 
           :duration => count[:kesto2],
-          :binoculars => count[:lasit]}
+          :binoculars => binoculars,
+          :rktl_telescope => telescope}
 
       end
 
@@ -43,7 +135,8 @@ module RktlData
           :pvm => count[:pvm_klo].split(" ").first,
           :hour => count[:pvm_klo].split(" ").last.split(":").first,
           :duration => count[:kesto],
-          :binoculars => count[:kaukoputki]}
+          :binoculars => count[:kiikari],
+          :rktl_telescope => count[:kaukoputki]}
       end
 
       combined
@@ -61,9 +154,6 @@ module RktlData
           observation.save!
           counts = count_hashes.map do |count_hash|
             "(#{observation.id},'#{count_hash[:abbr]}','#{count_hash[:hav].nil? ? "NULL" : count_hash[:hav]}')"
-            #Count = Count.new(count_hash)
-            #count.observation_id = observation.id
-            #count.save if count.valid?
 
           end
           sql = "INSERT INTO counts ('observation_id','abbr','pre_result') values #{counts.join(",")}"
@@ -145,80 +235,8 @@ module RktlData
 
     end
 
-    def self.create_places places_data
-      places_data.each do |data|
-        place_hash = generate_place_hash data
-        place = Place.new(place_hash)
 
-        if place.valid?
-          place.save
-        else
-          #TODO Generate errorz
-          next
-        end
-      end
-    end
 
-    def self.generate_place_hash data
-      hash = {}
-      hash[:observation_place_number] = data[:pnro]
-      hash[:nnn_coordinate] = data[:y] #TODO convert format!
-      hash[:eee_coordinate] = data[:x] #TODO convert format!
-      hash[:biotope_class] = data[:type]
-      hash[:place_area] = data[:sekala]
-      hash[:rktl_munincipal_code] = data[:kunta]
-      hash[:source] = "rktl"
-      hash
-    end
 
-    def self.parse_files pair_data_filename, places_data_filename, counts_upto_2011_filename, counts_2012_filename
-      data = {}
-      data[:pairs_data] = parse_file " ", pair_data_filename
-      data[:places_data] = parse_file ";", places_data_filename
-      data[:counts_upto_2011_data] = parse_file ";", counts_upto_2011_filename
-      data[:counts_2012_data] = parse_file ";", counts_2012_filename
-
-      data
-    end
-
-    def self.parse_file separator, filename
-      output = []
-      lines = File.readlines(filename).map{|s| s.gsub("\n","").split(separator)}
-      keys = lines.delete_at(0).map{|s| s.gsub("\"","").downcase.to_sym}
-      lines.each do |line|
-        data = {}
-        line = convert_space_separated line if separator == " "
-        line.map{|s| s.gsub("\"","")}.each_with_index do |value, i|
-          value = value.to_i if value =~ /\A\d*\z/
-          value = value.to_f if value =~ /\A\d*,\d*\z/
-          data[keys[i]] = value
-        end
-        output << data
-      end
-      output
-    end
-
-    def self.convert_space_separated array
-      output = []
-      index = 0
-      while(index < array.length)
-        if(array[index] =~ /\A"\w*\z/)
-          value = array[index]
-          index += 1
-          while(array[index] !~ /\A\w*"\z/)
-            value = "#{value} #{array[index]}"
-            index += 1
-          end
-          value = "#{value} #{array[index]}"
-          value.gsub!("\"","")
-          output << value
-        else
-          output << array[index]
-        end
-        index += 1
-      end
-
-      output
-    end
   end
 end
