@@ -24,7 +24,7 @@
             = link_to observations_search_path do
               %i.icon-search
               Haku
-        -if logged_in?
+        -if session[:logged_in] == true
           %li
             = link_to logout_path do
               %i.icon-ban-circle
