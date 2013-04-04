@@ -31,8 +31,7 @@
             route = FactoryGirl.create(:route)
             place = FactoryGirl.create(:place, :route_id => route.id)
             observation = FactoryGirl.create(:observation, :route_id => route.id, :place_id => place.id)
-            bird = FactoryGirl.create(:bird)
-            count = FactoryGirl.create(:count, :observation_id => observation.id, :bird_id => bird.id, :count => "10")
+            count = FactoryGirl.create(:count, :observation_id => observation.id, :abbr => "anapla", :count => "10")
             
             before do
               visit observation_path(observation)
@@ -93,7 +92,7 @@
             it { should have_selector('li', :text =>
 		            "Käytettiinkö venettä? #{observation.boat}") }
             it { should have_selector('li', :text =>
-                "#{bird.abbr}: 10") }
+                "anapla: 10") }
 	end
 
   describe "search page" do
