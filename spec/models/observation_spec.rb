@@ -31,6 +31,11 @@ describe Observation do
       it { should_not be_valid }
     end
 
+    describe "when observer id is empty" do
+      before { @observation.observer_id = " " }
+      it { should_not be_valid }
+    end
+
     describe "when first observation hour is empty" do
       before { @observation.first_observation_hour = " " }
       it { should be_valid }

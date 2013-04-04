@@ -4,6 +4,8 @@ class Place < ActiveRecord::Base
   belongs_to :place
 
   validates :observation_place_number, :inclusion => 1..999
+  validates :nnn_coordinate, :presence => true
+  validates :eee_coordinate, :presence => true
   validates :observation_place_name, :presence => true
   validates :place_area, :numericality => { :greater_than_or_equal_to => 0, :less_than_or_equal_to => 9999.9 },
                          :allow_nil => true,

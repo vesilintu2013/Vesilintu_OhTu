@@ -6,6 +6,7 @@ class Observation < ActiveRecord::Base
   accepts_nested_attributes_for :route, :place, :counts
 
   validates :year, :numericality => { :greater_than_or_equal_to => 1986, :less_than_or_equal_to => 2013 }
+  validates :observer_id, :presence => true
   validates :first_observation_hour, :numericality => { :only_integer => true },
                                      :inclusion => 0..23,
                                      :allow_blank => true,
@@ -14,10 +15,12 @@ class Observation < ActiveRecord::Base
                                       :inclusion => 0..23,
                                       :allow_blank => true,
                                       :allow_nil => true
-  validates :first_observation_duration, :inclusion => 0..999,
+  validates :first_observation_duration, :numericality => { :only_integer => true },
+                                         :inclusion => 0..999,
                                          :allow_blank => true,
                                          :allow_nil => true
-  validates :second_observation_duration, :inclusion => 0..999,
+  validates :second_observation_duration, :numericality => { :only_integer => true },
+                                          :inclusion => 0..999,
                                           :allow_blank => true,
                                           :allow_nil => true
   # Receive a hash of parameters and construct a query using the search terms 

@@ -26,6 +26,16 @@ describe "Place" do
       it { should_not be_valid }
     end
 
+    describe "when nnn coordinate is empty" do
+      before { @place.nnn_coordinate = " " }
+      it { should_not be_valid }
+    end
+
+    describe "when eee coordinate is empty" do
+      before { @place.eee_coordinate = " " }
+      it { should_not be_valid }
+    end
+
     describe "when observation place name is empty" do
       before { @place.observation_place_name = " " }
       it { should_not be_valid }
