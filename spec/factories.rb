@@ -14,6 +14,7 @@ FactoryGirl.define do
 		gullbirds											true
 		waders_eurasian_bittern				true
 		passerine											true
+    source                        "museum"
 	end
 
   factory :place do
@@ -27,6 +28,7 @@ FactoryGirl.define do
 		covering_area_beginning				nil
 		covering_area_end							nil
 	  place_area										"2.0"
+    source                        "museum"
   end
 
   factory :route do
@@ -39,13 +41,8 @@ FactoryGirl.define do
 		water_system_area							"2.0"
   end
 
-  factory :bird do
-    abbr    "analpa"
-    name    "sorsa"
-  end
-
   factory :count do
-    bird_id         "1"
+    abbr            "anapla"
     count           "0"
     observation_id  "1"
   end

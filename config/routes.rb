@@ -1,7 +1,8 @@
 VesilintuOhtu::Application.routes.draw do
   match 'observations/search' => 'observations#search'
-
+  match 'logout' => 'sessions#logout'
   resources :observations
+  resources :sessions
 
   # The priority is based upon order of creation:
   # first created -> highest priority.

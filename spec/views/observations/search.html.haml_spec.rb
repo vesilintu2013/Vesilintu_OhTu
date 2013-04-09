@@ -1,6 +1,9 @@
 require 'spec_helper'
 
 describe "observations/search.html.haml" do
+  before(:each) do
+    session[:logged_in] = true
+  end
   it "renders the _search partial" do
     render
 
