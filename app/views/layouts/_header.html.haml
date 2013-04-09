@@ -1,17 +1,17 @@
 .navbar.navbar-fixed-top
   .navbar-inner
     .container
-      = link_to "VesilintuOhtu", "/", :class => 'brand'
+      = link_to "VesilintuOhtu", root_path, :class => 'brand'
     
       %ul.nav.nav-tabs
         - if current_page?(root_path)
           %li.active
-            = link_to "/" do
+            = link_to root_path do
               %i.icon-home
               Etusivu
         - else
           %li
-            = link_to "/" do
+            = link_to root_path do
               %i.icon-home
               Etusivu
         -if current_page?(observations_search_path)
@@ -24,3 +24,9 @@
             = link_to observations_search_path do
               %i.icon-search
               Haku
+        -if session[:logged_in] == true
+          %li
+            = link_to logout_path do
+              %i.icon-ban-circle
+              Kirjaudu ulos
+

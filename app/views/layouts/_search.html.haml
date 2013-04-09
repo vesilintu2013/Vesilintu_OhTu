@@ -9,4 +9,6 @@
   = text_field_tag :observation_place_number, params[:observation_place_number]
   = label_tag :observer_id, 'Havainnoijatunnus'
   = text_field_tag :observer_id, params[:observer_id]
+  = label_tag :source, 'Lähde'
+  = select_tag :source, options_for_select([['Museo','museum'],['RKTL','rktl']]), :include_blank => true
   = submit_tag "Hae havaintoja", :name => nil, :class => 'btn btn-primary'

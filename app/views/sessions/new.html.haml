@@ -1,0 +1,4 @@
+= form_tag sessions_path, :method => 'post' do
+  = label_tag :password, "Salasana"
+  = text_field_tag :password
+  = submit_tag "Kirjaudu sisään", :name => nil, :class => 'btn btn-primary'
