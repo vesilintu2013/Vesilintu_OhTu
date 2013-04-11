@@ -56,7 +56,45 @@
     <field name="observation-spot_counting" type="selection" selection-options="observation-spot_counting" required="yes" title="Laskennan tyyppi" />
     <field name="observation-binoculars" type="selection" selection-options="observation-binoculars" title="Käytettiinkö laskennassa kaukoputkea?" />
     <field name="observation-boat" type="selection" selection-options="observation-boat" title="Käytettiinkö laskennassa venettä?" />
+    <field name="observation-gullbirds" type="selection" selection-options="observation-gullbirds" required="yes" title="Laskettiinko myös lokkilinnut?" />
+    <field name="observation-waders_eurasian_bittern" type="selection" selection-options="observation-waders_eurasian_bittern" required="yes" title="Laskettiinko myös kahlaajat ja kaulushaikara?" />
+    <field name="observation-passerine" type="selection" selection-options="observation-passerine" required="yes" title="Laskettiinko myös varpuslinnut?" />
 		<field name="observation-observer_id" type="selection" tipu-api-options="ringers" title="Laskija" user-as-default="yes" />
+    <field name="count-anapla" type="number" min-value="1.0" max-value="999.0" title="Anapla" />
+    <field name="count-anacre" type="number" min-value="1.0" max-value="999.0" title="Anacre" />
+    <field name="count-anaacu" type="number" min-value="1.0" max-value="999.0" title="Anaacu" />
+    <field name="count-anacly" type="number" min-value="1.0" max-value="999.0" title="Anacly" />
+    <field name="count-aytfer" type="number" min-value="1.0" max-value="999.0" title="Aytfer" />
+    <field name="count-buccla" type="number" min-value="1.0" max-value="999.0" title="Buccla" />
+    <field name="count-mermer" type="number" min-value="1.0" max-value="999.0" title="Mermer" />
+    <field name="count-fulatr" type="number" min-value="1.0" max-value="999.0" title="Fulatr" />
+    <field name="count-gavarc" type="number" min-value="1.0" max-value="999.0" title="Gavarc" />
+    <field name="count-podcri" type="number" min-value="1.0" max-value="999.0" title="Podcri" />
+    <field name="count-podgri" type="number" min-value="1.0" max-value="999.0" title="Podgri" />
+    <field name="count-podaur" type="number" min-value="1.0" max-value="999.0" title="Podaur" />
+    <field name="count-cygcyg" type="number" min-value="1.0" max-value="999.0" title="CygCyg" />
+    <field name="count-ansfab" type="number" min-value="1.0" max-value="999.0" title="Ansfab" />
+    <field name="count-bracan" type="number" min-value="1.0" max-value="999.0" title="Bracan" />
+    <field name="count-anapen" type="number" min-value="1.0" max-value="999.0" title="Anapen" />
+    <field name="count-anaque" type="number" min-value="1.0" max-value="999.0" title="Anaque" />
+    <field name="count-aytful" type="number" min-value="1.0" max-value="999.0" title="Aytful" />
+    <field name="count-melfus" type="number" min-value="1.0" max-value="999.0" title="Melfus" />
+    <field name="count-merser" type="number" min-value="1.0" max-value="999.0" title="Merser" />
+    <field name="count-meralb" type="number" min-value="1.0" max-value="999.0" title="Meralb" />
+    <field name="count-larmin" type="number" min-value="1.0" max-value="999.0" title="Larmin" />
+    <field name="count-larrid" type="number" min-value="1.0" max-value="999.0" title="Larrid" />
+    <field name="count-larcan" type="number" min-value="1.0" max-value="999.0" title="Larcan" />
+    <field name="count-stehir" type="number" min-value="1.0" max-value="999.0" title="Stehir" />
+    <field name="count-galgal" type="number" min-value="1.0" max-value="999.0" title="Galgal" />
+    <field name="count-trigla" type="number" min-value="1.0" max-value="999.0" title="Trigla" />
+    <field name="count-trineb" type="number" min-value="1.0" max-value="999.0" title="Trineb" />
+    <field name="count-trioch" type="number" min-value="1.0" max-value="999.0" title="Trioch" />
+    <field name="count-acthyp" type="number" min-value="1.0" max-value="999.0" title="Acthyp" />
+    <field name="count-numarq" type="number" min-value="1.0" max-value="999.0" title="Numarq" />
+    <field name="count-vanvan" type="number" min-value="1.0" max-value="999.0" title="Vanvan" />
+    <field name="count-botste" type="number" min-value="1.0" max-value="999.0" title="Botste" />
+    <field name="count-embsch" type="number" min-value="1.0" max-value="999.0" title="Embsch" />
+    <field name="count-acrsch" type="number" min-value="1.0" max-value="999.0" title="Acrsch" />
 	</field-list>
 
 	<selections>
@@ -86,6 +124,18 @@
       <option value="no">Ei</option>
     </selection-options>
     <selection-options name="observation-boat">
+      <option value="yes">Kyllä</option>
+      <option value="no">Ei</option>
+    </selection-options>
+    <selection-options name="observation-gullbirds">
+      <option value="yes">Kyllä</option>
+      <option value="no">Ei</option>
+    </selection-options>
+    <selection-options name="observation-waders_eurasian_bittern">
+      <option value="yes">Kyllä</option>
+      <option value="no">Ei</option>
+    </selection-options>
+    <selection-options name="observation-passerine">
       <option value="yes">Kyllä</option>
       <option value="no">Ei</option>
     </selection-options>
@@ -122,6 +172,11 @@
 </section>
 
 <section id="observation" title="Laskennan tiedot">
+  <sub-section>
+    <field name="observation-spot_counting" style="checkbox" />
+    <field name="observation-binoculars" style="checkbox" />
+    <field name="observation-boat" style="checkbox" />
+  </sub-section>
   <sub-section title="Ensimmäinen laskenta">
     <field name="observation-first_observation_date" />
     <field name="observation-first_observation_hour" />
@@ -132,11 +187,164 @@
     <field name="observation-second_observation_hour" />
     <field name="observation-second_observation_duration" />
   </sub-section>
-  <sub-section>
-    <field name="observation-spot_counting" style="checkbox" />
-    <field name="observation-binoculars" style="checkbox" />
-    <field name="observation-boat" style="checkbox" />
-  </sub-section>
+</section>
+
+<section id="counts" title="Havainnot">
+  <table>
+    <tr>
+      <th> Laji </th>
+      <th> Paria </th>
+    </tr>
+    <tr>
+      <td> Sinisorsa </td>
+      <td> <field name="count-anapla" show-title="no" /> </td>
+    </tr>
+    <tr>
+      <td> Tavi </td>
+      <td> <field name="count-anacre" show-title="no" /> </td>
+    </tr>
+    <tr>
+      <td> Jouhisorsa </td>
+      <td> <field name="count-anaacu" show-title="no" /> </td>
+    </tr>
+    <tr>
+      <td> Lapasorsa </td>
+      <td> <field name="count-anacly" show-title="no" /> </td>
+    </tr>
+    <tr>
+      <td> Punasotka </td>
+      <td> <field name="count-aytfer" show-title="no" /> </td>
+    </tr>
+    <tr>
+      <td> Telkkä </td>
+      <td> <field name="count-buccla" show-title="no" /> </td>
+    </tr>
+    <tr>
+      <td> Isokoskelo </td>
+      <td> <field name="count-mermer" show-title="no" /> </td>
+    </tr>
+    <tr>
+      <td> Nokikana </td>
+      <td> <field name="count-fulatr" show-title="no" /> </td>
+    </tr>
+    <tr>
+      <td> Kuikka </td>
+      <td> <field name="count-gavarc" show-title="no" /> </td>
+    </tr>
+    <tr>
+      <td> Silkkiuikku </td>
+      <td> <field name="count-podcri" show-title="no" /> </td>
+    </tr>
+    <tr>
+      <td> Härkälintu </td>
+      <td> <field name="count-podgri" show-title="no" /> </td>
+    </tr>
+    <tr>
+      <td> Mustakurkku-uikku </td>
+      <td> <field name="count-podaur" show-title="no" /> </td>
+    </tr>
+    <tr>
+      <td> Laulujoutsen </td>
+      <td> <field name="count-cygcyg" show-title="no" /> </td>
+    </tr>
+    <tr>
+      <td> Metsähanhi </td>
+      <td> <field name="count-ansfab" show-title="no" /> </td>
+    </tr>
+    <tr>
+      <td> Kanadanhani </td>
+      <td> <field name="count-bracan" show-title="no" /> </td>
+    </tr>
+    <tr>
+      <td> Haapana </td>
+      <td> <field name="count-anapen" show-title="no" /> </td>
+    </tr>
+    <tr>
+      <td> Heinätavi </td>
+      <td> <field name="count-anaque" show-title="no" /> </td>
+    </tr>
+    <tr>
+      <td> Tukkasotka </td>
+      <td> <field name="count-aytful" show-title="no" /> </td>
+    </tr>
+    <tr>
+      <td> Pilkkasiipi </td>
+      <td> <field name="count-melfus" show-title="no" /> </td>
+    </tr>
+    <tr>
+      <td> Tukkakoskelo </td>
+      <td> <field name="count-merser" show-title="no" /> </td>
+    </tr>
+    <tr>
+      <td> Uivelo </td>
+      <td> <field name="count-meralb" show-title="no" /> </td>
+    </tr>
+  </table>
+  <field name="observation-gullbirds" style="checkbox" />
+  <table>
+    <tr>
+      <td> Pikkulokki </td>
+      <td> <field name="count-larmin" show-title="no" /> </td>
+    </tr>
+    <tr>
+      <td> Naurulokki </td>
+      <td> <field name="count-larrid" show-title="no" /> </td>
+    </tr>
+    <tr>
+      <td> Kalalokki </td>
+      <td> <field name="count-larcan" show-title="no" /> </td>
+    </tr>
+    <tr>
+      <td> Kalatiira </td>
+      <td> <field name="count-stehir" show-title="no" /> </td>
+    </tr>
+  </table>
+  <field name="observation-waders_eurasian_bittern" style="checkbox" />
+  <table>
+    <tr>
+      <td> Taivaanvuohi </td>
+      <td> <field name="count-galgal" show-title="no" /> </td>
+    </tr>
+    <tr>
+      <td> Liro </td>
+      <td> <field name="count-trigla" show-title="no" /> </td>
+    </tr>
+    <tr>
+      <td> Valkoviklo </td>
+      <td> <field name="count-trineb" show-title="no" /> </td>
+    </tr>
+    <tr>
+      <td> Metsäviklo </td>
+      <td> <field name="count-trioch" show-title="no" /> </td>
+    </tr>
+    <tr>
+      <td> Rantasipi </td>
+      <td> <field name="count-acthyp" show-title="no" /> </td>
+    </tr>
+    <tr>
+      <td> Isokuovi </td>
+      <td> <field name="count-numarq" show-title="no" /> </td>
+    </tr>
+    <tr>
+      <td> Töyhtöhyyppä </td>
+      <td> <field name="count-vanvan" show-title="no" /> </td>
+    </tr>
+    <tr>
+      <td> Kaulushaikara </td>
+      <td> <field name="count-botste" show-title="no" /> </td>
+    </tr>
+  </table>
+  <field name="observation-passerine" style="checkbox" />
+  <table>
+    <tr>
+      <td> Pajusirkku </td>
+      <td> <field name="count-embsch" show-title="no" /> </td>
+    </tr>
+    <tr>
+      <td> Ruokokerttunen </td>
+      <td> <field name="count-acrsch" show-title="no" /> </td>
+    </tr>
+  </table>
 </section>
 
 </layout>
