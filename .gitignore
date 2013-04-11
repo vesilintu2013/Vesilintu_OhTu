@@ -6,6 +6,7 @@
 
 # Ignore sensitive password data
 /config/tipu.yml
+/config/kirjekyyhky.yml
 
 # Ignore bundler config
 /.bundle
