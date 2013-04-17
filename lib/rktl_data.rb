@@ -176,21 +176,23 @@ module RktlData
       observation_hash = {}
       observation_hash[:place_id] = Place.where(:observation_place_number => obs[:pnro], :source => "rktl").first.id
       observation_hash[:year] = obs[:vuosi]
-      if obs[:census] == 1
+      if obs[:pvm] =~ /-/
         date_array = obs[:pvm].split("-")
         begin
-          observation_hash[:first_observation_date] = Date.new(date_array[0].to_i,date_array[1].to_i,date_array[1].to_i)
+          observation_hash[:first_observation_date] = Date.new(date_array[0].to_i,date_array[1].to_i,date_array[2].to_i)
         rescue
           raise date_array.inspect
         end
-        observation_hash[:first_observation_hour] = obs[:hour]
-        observation_hash[:first_observation_duration] = obs[:duration]
       else
         date_array = obs[:pvm].split(".")
-        observation_hash[:first_observation_date] = Date.new(date_array[2].to_i,date_array[1].to_i,date_array[0].to_i)
-        observation_hash[:first_observation_hour] = obs[:hour]
-        observation_hash[:first_observation_duration] = obs[:duration]
+        begin
+          observation_hash[:first_observation_date] = Date.new(date_array[2].to_i,date_array[1].to_i,date_array[0].to_i)
+        rescue
+          raise date_array.inspect
+        end
       end
+      observation_hash[:first_observation_hour] = obs[:hour]
+      observation_hash[:first_observation_duration] = obs[:duration]
       observation_hash[:binoculars] = (obs[:binoculars] == 1)
       observation_hash[:source] = "rktl"
 
@@ -198,34 +200,27 @@ module RktlData
     end
 
     def self.group_observations pairs_data, combined_counts
-
-      observations = []
-      while(!pairs_data.empty?)
-        first = pairs_data.first
-
-        group = pairs_data.select do |obs|
-          (obs[:pnro] == first[:pnro]) && (obs[:vuosi] == first[:vuosi]) && (obs[:census] == first[:census])
-        end
-
-        pairs_data.delete_if do |obs|
-          (obs[:pnro] == first[:pnro]) && (obs[:vuosi] == first[:vuosi]) && (obs[:census] == first[:census])
-        end
-        
-        next if group.empty?
-
-        flattened_group = flatten_group group
-
-        extra_data = combined_counts.select do |s|
-          (s[:pvm].nil? ? nil : s[:pvm].split(".").last) == flattened_group[:vuosi] && s[:pnro] == flattened_group[:pnro] && s[:census] == flattened_group[:census]
-        end
-
-        flattened_group[:hour] = extra_data.first[:hour] unless extra_data.empty?
-        flattened_group[:duration] = extra_data.first[:duration] unless extra_data.empty?
-
-
-        observations << flattened_group
+      bucket = {}
+      pairs_data.each do |pair|
+        pair_sym = "pair_#{pair[:pnro]}_#{pair[:vuosi]}_#{pair[:census]}".to_sym
+        bucket[pair_sym] = [] if bucket[pair_sym].nil?
+        bucket[pair_sym] << pair
       end
-      observations
+      bucket.keys.each do |key|
+        bucket[key] = flatten_group(bucket[key])
+      end
+      combined_counts.each do |count|
+        if count[:pvm].nil?
+          next
+        else
+          pair_sym = "pair_#{count[:pnro]}_#{count[:pvm].split(".").last}_#{count[:census]}"
+          unless bucket[pair_sym].nil?
+            bucket[pair_sym][:hour] = count[:hour] if bucket[pair_sym][:hour].nil?
+            bucket[pair_sym][:duration] = count[:duration] if bucket[pair_sym][:duration].nil?
+          end
+        end
+      end
+      bucket.values
     end
 
     def self.flatten_group group
