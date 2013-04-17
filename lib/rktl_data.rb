@@ -2,12 +2,17 @@
 module RktlData
   class Parser
 
+    def initialize
+      flush_errors
+    end
 
-    def self.test_everything
+
+    def test_everything
       parse "pair_test", "places_test", "counts_2011_test", "counts_2012_test"
     end
 
-    def self.parse pair_data_filename, places_data_filename, counts_upto_2011_filename, counts_2012_filename
+    def parse pair_data_filename, places_data_filename, counts_upto_2011_filename, counts_2012_filename
+      flush_errors
       data = parse_files pair_data_filename, places_data_filename, counts_upto_2011_filename, counts_2012_filename
 
       ActiveRecord::Base.transaction do
@@ -17,9 +22,18 @@ module RktlData
       end
     end
 
+    def errors
+      @errors
+    end
+
+
     private
 
-    def self.create_places places_data
+    def flush_errors
+      @errors = {:places => [], :observations => [], :counts => []}
+    end
+
+    def create_places places_data
       places_data.each do |data|
         place_hash = generate_place_hash data
         place = Place.new(place_hash)
@@ -27,13 +41,13 @@ module RktlData
         if place.valid?
           place.save
         else
-          #TODO Generate errorz
+          @errors[:places] << {:errors => place.errors, :data => data, :hash => place_hash}
           next
         end
       end
     end
 
-    def self.generate_place_hash data
+    def generate_place_hash data
       hash = {}
       hash[:observation_place_number] = data[:pnro]
       hash[:nnn_coordinate] = data[:y] #TODO convert format!
@@ -56,7 +70,7 @@ module RktlData
       hash
     end
 
-    def self.parse_files pair_data_filename, places_data_filename, counts_upto_2011_filename, counts_2012_filename
+    def parse_files pair_data_filename, places_data_filename, counts_upto_2011_filename, counts_2012_filename
       data = {}
       data[:pairs_data] = parse_file " ", pair_data_filename
       data[:places_data] = parse_file ";", places_data_filename
@@ -66,7 +80,7 @@ module RktlData
       data
     end
 
-    def self.parse_file separator, filename
+    def parse_file separator, filename
       output = []
       lines = File.readlines(filename).map{|s| s.gsub("\n","").split(separator)}
       keys = lines.delete_at(0).map{|s| s.gsub("\"","").gsub("ä","a").downcase.to_sym}
@@ -83,7 +97,7 @@ module RktlData
       output
     end
 
-    def self.convert_space_separated array
+    def convert_space_separated array
       output = []
       index = 0
       while(index < array.length)
@@ -106,7 +120,7 @@ module RktlData
       output
     end
 
-    def self.combine_counts_data upto_2011_data, year_2012_data
+    def combine_counts_data upto_2011_data, year_2012_data
       combined = []
       upto_2011_data.each do |count|
         binoculars = (count[:lasit] == 1 ? 1 : 0)
@@ -142,37 +156,30 @@ module RktlData
       combined
     end
 
-    def self.create_observations pairs_data, combined_counts
-      grouped_observations = group_observations pairs_data.clone, combined_counts
+    def create_observations pairs_data, combined_counts
+      grouped_observations = group_observations pairs_data, combined_counts
       grouped_observations.each do |obs|
 
-        observation_hash, count_hashes = generate_observation_and_counts_hashes obs
+        observation_hash = generate_observation_and_counts_hashes obs
         observation = Observation.new(observation_hash)
 
         if observation.valid?
 
           observation.save!
-          #This is a dumb hack. We need to do this because of sqlite, once we get a proper database we can do a mass insert.
-          count_hashes.each do |count_hash|
+          obs[:results].each do |count_hash|
             values = "(#{observation.id},'#{count_hash[:abbr]}','#{count_hash[:hav].nil? ? "NULL" : count_hash[:hav]}')"
             sql = "INSERT INTO counts ('observation_id','abbr','pre_result') values #{values}"
             ActiveRecord::Base.connection.execute(sql)
           end
-          #counts = count_hashes.map do |count_hash|
-          #  "(#{observation.id},'#{count_hash[:abbr]}','#{count_hash[:hav].nil? ? "NULL" : count_hash[:hav]}')"
-
-          #end
-          #sql = "INSERT INTO counts ('observation_id','abbr','pre_result') values #{counts.join(",")}"
-          #ActiveRecord::Base.connection.execute(sql)
 
         else
-          #ERRORZ
+          @errors[:observations] << {:errors => observation.errors, :data => obs, :hash => observation_hash}
           next
         end
       end
     end
 
-    def self.generate_observation_and_counts_hashes obs
+    def generate_observation_and_counts_hashes obs
       observation_hash = {}
       observation_hash[:place_id] = Place.where(:observation_place_number => obs[:pnro], :source => "rktl").first.id
       observation_hash[:year] = obs[:vuosi]
@@ -196,10 +203,10 @@ module RktlData
       observation_hash[:binoculars] = (obs[:binoculars] == 1)
       observation_hash[:source] = "rktl"
 
-      [observation_hash, obs[:results]]
+      observation_hash
     end
 
-    def self.group_observations pairs_data, combined_counts
+    def group_observations pairs_data, combined_counts
       bucket = {}
       pairs_data.each do |pair|
         pair_sym = "pair_#{pair[:pnro]}_#{pair[:vuosi]}_#{pair[:census]}".to_sym
@@ -211,9 +218,10 @@ module RktlData
       end
       combined_counts.each do |count|
         if count[:pvm].nil?
+          @errors[:counts] << count
           next
         else
-          pair_sym = "pair_#{count[:pnro]}_#{count[:pvm].split(".").last}_#{count[:census]}"
+          pair_sym = "pair_#{count[:pnro]}_#{count[:pvm].split(".").last}_#{count[:census]}".to_sym
           unless bucket[pair_sym].nil?
             bucket[pair_sym][:hour] = count[:hour] if bucket[pair_sym][:hour].nil?
             bucket[pair_sym][:duration] = count[:duration] if bucket[pair_sym][:duration].nil?
@@ -223,10 +231,10 @@ module RktlData
       bucket.values
     end
 
-    def self.flatten_group group
+    def flatten_group group
       birds = []
       group.each do |obs|
-        birds << {:abbr => bird_id_to_abbr(obs[:laji]), :hav => obs[:hav]}
+        birds << {:abbr => BIRD_IDS[obs[:laji].to_i], :hav => obs[:hav]}
       end
       flattened_group = {}
       group.first.keys.each do |key|
@@ -237,7 +245,7 @@ module RktlData
 
     end
 
-    def self.bird_id_to_abbr id
+    def bird_id_to_abbr id
       BIRD_IDS[id.to_i]
     end
     BIRD_IDS = {11 => "anapla",
