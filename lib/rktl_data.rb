@@ -3,7 +3,7 @@ module RktlData
   class Parser
 
     def initialize
-      flush_errors
+      init_errors
     end
 
 
@@ -12,7 +12,7 @@ module RktlData
     end
 
     def parse pair_data_filename, places_data_filename, counts_upto_2011_filename, counts_2012_filename
-      flush_errors
+      init_errors
       data = parse_files pair_data_filename, places_data_filename, counts_upto_2011_filename, counts_2012_filename
 
       ActiveRecord::Base.transaction do
@@ -20,6 +20,13 @@ module RktlData
         combined_counts_data = combine_counts_data data[:counts_upto_2011_data], data[:counts_2012_data]
         create_observations data[:pairs_data], combined_counts_data
       end
+      nil
+    end
+
+    def print_errors
+      print_errors_for :places
+      print_errors_for :observations
+      print_errors_for :counts
     end
 
     def errors
@@ -29,7 +36,29 @@ module RktlData
 
     private
 
-    def flush_errors
+    def print_errors_for type
+      File.open(generate_log_filename(type.to_s), "w" ) do |f|
+        @errors[type].each do |error|
+          f.puts "Model Hash"
+          if type == :counts
+            f.puts error.inspect
+          else
+            f.puts error[:hash].inspect
+            f.puts "Validation errors"
+            f.puts error[:errors].inspect
+            f.puts "Original data"
+            f.puts error[:data].inspect
+          end
+          f.puts "--------------------------------"
+        end
+      end
+    end
+
+    def generate_log_filename type
+      File.join(Rails.root, "/log/#{type}_error_log_#{Time.now.to_formatted_s(:number)}")
+    end
+
+    def init_errors
       @errors = {:places => [], :observations => [], :counts => []}
     end
 
