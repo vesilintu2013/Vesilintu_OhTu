@@ -44,5 +44,8 @@ RSpec.configure do |config|
     TipuApi::Interface.stub(:ringers) do |arg| 
       { "ringer" => [{ "id" => 1234 }, { "id" => arg.to_i }] }
     end
+    TipuApi::Interface.stub(:species) do |arg|
+      { "species" => [{ "id" => "HORSE" }, { "id" => arg.capitalize }] }
+    end
   end
 end
