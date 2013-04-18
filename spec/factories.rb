@@ -1,13 +1,13 @@
 FactoryGirl.define do
   factory :observation do
 		year													"1986"
-		observer_id										"8000"
+		observer_id										"1000"
 		first_observation_date				"1986-05-11"
 		second_observation_date				nil
 		first_observation_hour				"7"
 		first_observation_duration		"5"
-		second_observation_hour		 	 	"0"
-		second_observation_duration		"0"
+		second_observation_hour		 	 	" "
+		second_observation_duration		" "
 		spot_counting									true
 		binoculars										false
 		boat													false

@@ -2,10 +2,111 @@ require 'spec_helper'
 
 describe Observation do
   
-  it "should have a valid factory" do
-    observation = FactoryGirl.create(:observation)
-    observation.should be_valid
-  end
+  describe "validations" do
+    before do
+      @observation = FactoryGirl.create(:observation, :source => "museum")
+    end
+
+    subject {@observation }
+
+    it { should be_valid }
+    
+    describe "when year is not present" do
+      before {@observation.year = " " }
+      it { should_not be_valid }
+    end
+
+    describe "when year is not a number" do
+      before { @observation.year = "booyah" }
+      it { should_not be_valid }
+    end
+
+    describe "when year is too large" do
+      before { @observation.year = Date.today.year + 1 }
+      it { should_not be_valid }
+    end
+
+    describe "when year is too small" do
+      before { @observation.year = 1985 }
+      it { should_not be_valid }
+    end
+
+    describe "when observer id is empty" do
+      before { @observation.observer_id = " " }
+      it { should_not be_valid }
+    end
+
+    describe "when first observation hour is empty" do
+      before { @observation.first_observation_hour = " " }
+      it { should be_valid }
+    end
+
+    describe "when first observation hour is too large" do
+      before { @observation.first_observation_hour = "24" }
+      it { should_not be_valid }
+    end
+
+    describe "when first observation hour is not a number" do
+      before { @observation.first_observation_hour = "fudge" }
+      it { should_not be_valid }
+    end
+ 
+    describe "when second observation hour is empty" do
+      before { @observation.second_observation_hour = " " }
+      it { should be_valid }
+    end
+
+    describe "when second observation hour is too large" do
+      before { @observation.second_observation_hour = "24" }
+      it { should_not be_valid }
+    end
+
+    describe "when second observation hour is not a number" do
+      before { @observation.second_observation_hour = "fudge" }
+      it { should_not be_valid }
+    end
+
+    describe "when first observation duration is empty" do
+      before { @observation.first_observation_duration = " " }
+      it { should be_valid }
+    end
+
+    describe "when first observation duration is too large" do
+      before { @observation.first_observation_duration = "1000" }
+      it { should_not be_valid }
+    end
+
+    describe "when first observation duration is not a number" do
+      before { @observation.first_observation_duration = "fudge" }
+      it { should_not be_valid }
+    end
+ 
+    describe "when second observation duration is empty" do
+      before { @observation.second_observation_duration = " " }
+      it { should be_valid }
+    end
+
+    describe "when second observation duration is too large" do
+      before { @observation.second_observation_duration = "1000" }
+      it { should_not be_valid }
+    end
+
+    describe "when second observation duration is not a number" do
+      before { @observation.second_observation_duration = "fudge" }
+      it { should_not be_valid }
+    end
+
+#    describe "when TipuApi returns an empty list of observers" do
+#      before { TipuApi::Interface.stub(:ringers).and_return("") }
+#      it { should_not be_valid }
+#    end
+#
+#    describe "when TipuApi return a list of observers that does not contain this observer" do
+#      before { TipuApi::Interface.stub(:ringers).and_return({ "ringer" => { "id" => 1234 } }) }
+#      it { should_not be_valid }
+#    end
+end
+
 
   describe "search method" do
     before do
