@@ -49,11 +49,21 @@ class Observation < ActiveRecord::Base
 
   def tipu_observer
     query_result = TipuApi::Interface.ringers filter = observer_id.to_s
-    query_result["ringer"].each do |ringer|
-      if ringer["id"] == observer_id
+    ringers = query_result["ringer"]
+
+    # query_result["ringer"] is an Array of hashes if there are multiple results.
+    if ringers.is_a?(Array)
+      ringers.each do |ringer|
+        if ringer["id"] == observer_id
+          return true
+        end
+      end
+    elsif ringers.is_a?(Hash)
+      if ringers["id"] == observer_id
         return true
       end
     end
+
     errors.add(:observer_id, "Havainnoijatunnus ei kelpaa") 
   end
 end

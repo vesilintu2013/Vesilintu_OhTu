@@ -95,6 +95,16 @@ describe Observation do
       before { @observation.second_observation_duration = "fudge" }
       it { should_not be_valid }
     end
+
+    describe "when TipuApi returns an empty list of observers" do
+      before { TipuApi::Interface.stub(:ringers).and_return("") }
+      it { should_not be_valid }
+    end
+
+    describe "when TipuApi return a list of observers that does not contain this observer" do
+      before { TipuApi::Interface.stub(:ringers).and_return({ "ringer" => { "id" => 1234 } }) }
+      it { should_not be_valid }
+    end
 end
 
 
