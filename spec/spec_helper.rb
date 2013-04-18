@@ -47,5 +47,8 @@ RSpec.configure do |config|
     TipuApi::Interface.stub(:species) do |arg|
       { "species" => [{ "id" => "HORSE" }, { "id" => arg.capitalize }] }
     end
+    TipuApi::Interface.stub(:municipalities) do |arg|
+      { "municipality" => [{ "id" => "CHICAGO" }, { "id" => arg.capitalize }] }
+    end
   end
 end

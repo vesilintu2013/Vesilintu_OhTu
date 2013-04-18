@@ -10,6 +10,10 @@ module TipuApi
       make_request("species", filter)["species"]
     end
 
+    def self.municipalities filter = ""
+      make_request("municipalities", filter)["municipalities"]
+    end
+
     def self.make_request endpoint, filter = ""
       credentials = YAML.load(File.open(Rails.root.join("config/tipu.yml")))
 

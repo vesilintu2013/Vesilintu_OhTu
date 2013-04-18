@@ -2,9 +2,9 @@ class Count < ActiveRecord::Base
   attr_accessible :abbr, :count, :observation_id, :bird_attributes
   belongs_to :observation
 
-  validate :tipuapi
+  validate :tipuapi_abbr
 
-  def tipuapi
+  def tipuapi_abbr
     query_result = TipuApi::Interface.species filter = abbr
     species = query_result["species"]
 

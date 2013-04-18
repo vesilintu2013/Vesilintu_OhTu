@@ -60,5 +60,15 @@ describe "Route" do
       before { @route.water_system_area = "lol" }
       it { should_not be_valid }
     end
+
+    describe "when tipuapi returns an empty list of municipalities" do
+      before { TipuApi::Interface.stub(:municipalities).and_return("") }
+      it { should_not be_valid }
+    end
+
+    describe "when tipuapi returns a list of municipalities that does not include this municipality" do
+      before { TipuApi::Interface.stub(:municipalities).and_return({ "municipality" => { "id" => "KONTU" } } ) }
+      it { should_not be_valid }
+    end
   end
 end
