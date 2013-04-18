@@ -30,67 +30,67 @@
           describe "show Observation page" do
             route = FactoryGirl.create(:route)
             place = FactoryGirl.create(:place, :route_id => route.id)
-            observation = FactoryGirl.create(:observation, :route_id => route.id, :place_id => place.id)
-            count = FactoryGirl.create(:count, :observation_id => observation.id, :abbr => "anapla", :count => "10")
             
             before do
-              visit observation_path(observation)
+              @observation = FactoryGirl.create(:observation, :route_id => route.id, :place_id => place.id, :source => "museum")
+              FactoryGirl.create(:count, :observation_id => @observation.id, :abbr => "anapla", :count => "10")
+              visit observation_path(@observation)
             end
 
             it { should have_selector('h1', :text => "Havainnon tiedot") }
 
             it { should have_selector('li', :text => 
-                        "Reitin numero: #{observation.route.route_number}") }
+                        "Reitin numero: #{@observation.route.route_number}") }
             it { should have_selector('li', :text => 
-                        "Vuosi: #{observation.year}") }
+                        "Vuosi: #{@observation.year}") }
             it { should have_selector('li', :text => 
-		            "Reitin paikan numero: #{observation.place.observation_place_number}") }
+		            "Reitin paikan numero: #{@observation.place.observation_place_number}") }
             it { should have_selector('li', :text =>
-                "Havainnoijatunnus: #{observation.observer_id}") }
+                "Havainnoijatunnus: #{@observation.observer_id}") }
             it { should have_selector('li', :text =>
-		            "Kuntakoodi: #{observation.route.municipal_code}") }
+		            "Kuntakoodi: #{@observation.route.municipal_code}") }
             it { should have_selector('li', :text =>
-								"NNN-koordinaatti: #{observation.place.nnn_coordinate}") }
+								"NNN-koordinaatti: #{@observation.place.nnn_coordinate}") }
            	it { should have_selector('li', :text =>
-								"EEE-koordinaatti: #{observation.place.eee_coordinate}") }
+								"EEE-koordinaatti: #{@observation.place.eee_coordinate}") }
             it { should have_selector('li', :text =>
-		            "Biotooppiluokka: #{observation.place.biotope_class}") }
+		            "Biotooppiluokka: #{@observation.place.biotope_class}") }
             it { should have_selector('li', :text =>
-		            "Reitin edustavuus: #{observation.route.route_representative_class}") }
+		            "Reitin edustavuus: #{@observation.route.route_representative_class}") }
             it { should have_selector('li', :text =>
-								"Pistelaskentapaikkojen määrä reitillä: #{observation.route.spot_observation_place_count}") }
+								"Pistelaskentapaikkojen määrä reitillä: #{@observation.route.spot_observation_place_count}") }
             it { should have_selector('li', :text =>
-								"Kiertolaskentapaikkojen määrä reitillä: #{observation.route.roaming_observation_place_count}") }
+								"Kiertolaskentapaikkojen määrä reitillä: #{@observation.route.roaming_observation_place_count}") }
             it { should have_selector('li', :text =>
-		            "Havaintopaikan nimi: #{observation.place.observation_place_name}") }
+		            "Havaintopaikan nimi: #{@observation.place.observation_place_name}") }
             it { should have_selector('li', :text =>
-		            "1. laskentakerran pvm: #{observation.first_observation_date}") }
+		            "1. laskentakerran pvm: #{@observation.first_observation_date}") }
             it { should have_selector('li', :text =>
-		            "2. laskentakerran pvm: #{observation.second_observation_date}") }
+		            "2. laskentakerran pvm: #{@observation.second_observation_date}") }
             it { should have_selector('li', :text =>
-		            "1. laskentakerran aloitustunti: #{observation.first_observation_hour}") }
+		            "1. laskentakerran aloitustunti: #{@observation.first_observation_hour}") }
             it { should have_selector('li', :text =>
-		            "2. laskentakerran aloitustunti: #{observation.second_observation_hour}") }
+		            "2. laskentakerran aloitustunti: #{@observation.second_observation_hour}") }
             it { should have_selector('li', :text =>
-		            "1. laskentakerran kesto: #{observation.first_observation_duration}") }
+		            "1. laskentakerran kesto: #{@observation.first_observation_duration}") }
             it { should have_selector('li', :text =>
-		            "2. laskentakerran kesto: #{observation.second_observation_duration}") }
+		            "2. laskentakerran kesto: #{@observation.second_observation_duration}") }
             it { should have_selector('li', :text =>
-		            "Koko vesistön ala: #{observation.route.water_system_area}") }
+		            "Koko vesistön ala: #{@observation.route.water_system_area}") }
             it { should have_selector('li', :text =>
-		            "Laskentapaikan ala: #{observation.place.place_area}") }
+		            "Laskentapaikan ala: #{@observation.place.place_area}") }
             it { should have_selector('li', :text =>
-                "Laskentapaikka kattoi koko vesistön: #{observation.place.area_covers_fully}") }
+                "Laskentapaikka kattoi koko vesistön: #{@observation.place.area_covers_fully}") }
             it { should have_selector('li', :text =>
-		            "Koko vesistön kattavat paikat alkaen: #{observation.place.covering_area_beginning}") }
+		            "Koko vesistön kattavat paikat alkaen: #{@observation.place.covering_area_beginning}") }
             it { should have_selector('li', :text =>
-		            "Koko vesistön kattavat paikat päättyen: #{observation.place.covering_area_end}") }
+		            "Koko vesistön kattavat paikat päättyen: #{@observation.place.covering_area_end}") }
             it { should have_selector('li', :text =>
-		            "Pistelaskenta? #{observation.spot_counting}") }
+		            "Pistelaskenta? #{@observation.spot_counting}") }
             it { should have_selector('li', :text =>
-		            "Käytettiinkö kiikaria? #{observation.binoculars}") }
+		            "Käytettiinkö kiikaria? #{@observation.binoculars}") }
             it { should have_selector('li', :text =>
-		            "Käytettiinkö venettä? #{observation.boat}") }
+		            "Käytettiinkö venettä? #{@observation.boat}") }
             it { should have_selector('li', :text =>
                 "anapla: 10") }
 	end

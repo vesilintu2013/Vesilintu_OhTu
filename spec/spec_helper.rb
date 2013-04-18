@@ -35,4 +35,14 @@ RSpec.configure do |config|
   # the seed, which is printed after each run.
   #     --seed 1234
   config.order = "random"
+
+  # Stub TipuApi::Interface methods to avoid external API calls during specs.
+  # These stubs should always result in successful validation of models. Test
+  # failing validations by stubbing the API methods in the corresponding spec
+  # files.
+  config.before(:each) do
+    TipuApi::Interface.stub(:ringers) do |arg| 
+      { "ringer" => [{ "id" => 1234 }, { "id" => arg.to_i }] }
+    end
+  end
 end

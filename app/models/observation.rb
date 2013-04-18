@@ -1,4 +1,7 @@
+require 'tipuapi'
 class Observation < ActiveRecord::Base
+  include TipuApi
+
   has_many :counts
   belongs_to :route
   belongs_to :place
@@ -23,6 +26,8 @@ class Observation < ActiveRecord::Base
                                           :inclusion => 0..999,
                                           :allow_blank => true,
                                           :allow_nil => true
+  validate :tipu_observer
+
   # Receive a hash of parameters and construct a query using the search terms 
   # in the hash.
   def self.search(search)
@@ -40,5 +45,15 @@ class Observation < ActiveRecord::Base
     result = result.where("lower(places.observation_place_name) = lower(?)",  search['observation_place_name'] ) unless
               search['observation_place_name'].blank?
     return result
+  end
+
+  def tipu_observer
+    query_result = TipuApi::Interface.ringers filter = observer_id.to_s
+    query_result["ringer"].each do |ringer|
+      if ringer["id"] == observer_id
+        return true
+      end
+    end
+    errors.add(:observer_id, "Havainnoijatunnus ei kelpaa") 
   end
 end
