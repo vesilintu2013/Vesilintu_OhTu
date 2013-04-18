@@ -61,11 +61,6 @@ describe "Place" do
       it { should_not be_valid }
     end
 
-    describe "when area_covers_fully is empty" do
-      before { @place.area_covers_fully = " " }
-      it { should_not be_valid }
-    end
-
     describe "when area_covers_fully is not a number" do
       before { @place.area_covers_fully = "boo" }
       it { should_not be_valid }

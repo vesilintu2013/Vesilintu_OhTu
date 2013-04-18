@@ -6,6 +6,10 @@ module TipuApi
       make_request("ringers", filter)["ringers"]
     end
 
+    def self.observer_synonyms filter = ""
+      make_request("observer-synonyms", filter)["observer-synonyms"]
+    end
+
     def self.species filter = ""
       make_request("species", filter)["species"]
     end
@@ -21,7 +25,7 @@ module TipuApi
         endpoint = endpoint.join("/")
       end
 
-      uri = URI("#{credentials["url"]}#{endpoint}/?format=json#{filter.empty? ? "" : "&filter=#{filter}"}")
+      uri = URI.parse(URI.encode("#{credentials["url"]}#{endpoint}/?format=json#{filter.empty? ? "" : "&filter=#{filter}"}"))
 
       http = Net::HTTP.new(uri.host, uri.port)
       http.use_ssl = true

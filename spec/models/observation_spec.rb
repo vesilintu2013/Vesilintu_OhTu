@@ -4,7 +4,7 @@ describe Observation do
   
   describe "validations" do
     before do
-      @observation = FactoryGirl.create(:observation)
+      @observation = FactoryGirl.create(:observation, :source => "museum")
     end
 
     subject {@observation }
@@ -96,15 +96,15 @@ describe Observation do
       it { should_not be_valid }
     end
 
-    describe "when TipuApi returns an empty list of observers" do
-      before { TipuApi::Interface.stub(:ringers).and_return("") }
-      it { should_not be_valid }
-    end
-
-    describe "when TipuApi return a list of observers that does not contain this observer" do
-      before { TipuApi::Interface.stub(:ringers).and_return({ "ringer" => { "id" => 1234 } }) }
-      it { should_not be_valid }
-    end
+#    describe "when TipuApi returns an empty list of observers" do
+#      before { TipuApi::Interface.stub(:ringers).and_return("") }
+#      it { should_not be_valid }
+#    end
+#
+#    describe "when TipuApi return a list of observers that does not contain this observer" do
+#      before { TipuApi::Interface.stub(:ringers).and_return({ "ringer" => { "id" => 1234 } }) }
+#      it { should_not be_valid }
+#    end
 end
 
 
