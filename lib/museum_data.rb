@@ -124,8 +124,9 @@ module MuseumData
 
     def parse_data filename
       output = []
+      abbreviations = TipuApi::Interface.species["species"].map{|s| s["id"].downcase.to_sym}
       File.open(filename).each_line do |line|
-        observation = parse_observation(line.strip!)
+        observation = parse_observation(line.strip!, abbreviations)
         output << observation unless observation.nil?
       end
       output
@@ -225,8 +226,6 @@ module MuseumData
 
       observation[:original_data] = line
       observation[:counts_data] = {}
-
-      abbreviations = TipuApi::Interface.species["species"].map{|s| s["id"].downcase.to_sym}
 
       abbreviations.each do |abbr_key|
         observation[:counts_data][abbr_key] = observation.delete(abbr_key) unless observation[abbr_key].nil?
