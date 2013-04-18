@@ -1,3 +1,4 @@
+require 'tipuapi'
 module MuseumData
 
   # The MuseumData::Parser class specified below provides functionality for parsing the provided
@@ -225,8 +226,10 @@ module MuseumData
       observation[:original_data] = line
       observation[:counts_data] = {}
 
-      Bird.abbreviations.each do |abbr_key|
-        observation[:counts_data][abbr_key] = observation.delete(abbr_key) 
+      abbreviations = TipuApi::Interface.species["species"].map{|s| s["id"].downcase.to_sym}
+
+      abbreviations.each do |abbr_key|
+        observation[:counts_data][abbr_key] = observation.delete(abbr_key) unless observation[abbr_key].nil?
       end
 
       observation
