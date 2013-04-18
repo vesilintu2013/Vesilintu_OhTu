@@ -6,7 +6,6 @@ module RktlData
       init_errors
     end
 
-
     def test_everything
       parse "pair_test", "places_test", "counts_2011_test", "counts_2012_test"
     end
@@ -55,7 +54,7 @@ module RktlData
     end
 
     def generate_log_filename type
-      File.join(Rails.root, "/log/#{type}_error_log_#{Time.now.to_formatted_s(:number)}")
+      File.join(Rails.root, "/log/rktl_#{type}_error_log_#{Time.now.to_formatted_s(:number)}")
     end
 
     def init_errors

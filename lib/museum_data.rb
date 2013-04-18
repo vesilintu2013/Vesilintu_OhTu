@@ -19,9 +19,22 @@ module MuseumData
   #   300 is added to all EEE-coordinates, so that they are consistent with the NNN-coordinates
   class Parser
 
-    def self.parse filename
-      #TODO Rails model creation from the data below.
-      #return nil
+    def initialize
+      init_errors
+    end
+
+    def errors
+      @errors
+    end
+
+    def print_errors
+      print_errors_for :routes
+      print_errors_for :places
+      print_errors_for :observations
+    end
+
+    def parse filename
+      init_errors
       data = parse_data filename
       ActiveRecord::Base.transaction do
         data.each do |data_hash|
@@ -33,7 +46,7 @@ module MuseumData
             place.route_id = route.id
             observation.route_id = route.id
           else
-            generate_error_message data_hash[:original_data], route.errors
+            add_to_errors :routes, data_hash[:original_data], route
             next
           end
 
@@ -41,7 +54,7 @@ module MuseumData
             place.save!
             observation.place_id = place.id
           else
-            generate_error_message data_hash[:original_data], place.errors
+            add_to_errors :places, data_hash[:original_data], place
             next
           end
 
@@ -49,7 +62,7 @@ module MuseumData
             observation.save!
             generate_counts data_hash[:counts_data], observation.id
           else
-            generate_error_message data_hash[:original_data], observation.errors
+            add_to_errors :observations, data_hash[:original_data], observation
             next
           end
 
@@ -59,20 +72,33 @@ module MuseumData
 
     private
 
-    def self.generate_error_message original_data, errors
-        puts "Error creating observation, original data:"
-        puts original_data
-        puts "Errors:"
-        puts errors
+    def init_errors
+      @errors = {:places => [], :observations => [], :routes => []}
     end
 
-    def self.generate_counts counts_data, id
-      #counts = counts_data.keys.map do |key|
-      #  "(#{id},'#{key}',#{counts_data[key].nil? ? "NULL" : counts_data[key]})"
-      #end
-      #sql = "INSERT INTO counts ('observation_id','abbr','count') values #{counts.join(",")}"
-      #ActiveRecord::Base.connection.execute(sql)
-      #More ugly hacks because of sqlite!
+    def generate_log_filename type
+      File.join(Rails.root, "/log/museum_#{type}_error_log_#{Time.now.to_formatted_s(:number)}")
+    end
+
+    def print_errors_for type
+      File.open(generate_log_filename(type.to_s), "w" ) do |f|
+        @errors[type].each do |error|
+          f.puts "Model"
+          f.puts error[:model].inspect
+          f.puts "Validation errors"
+          f.puts error[:errors].inspect
+          f.puts "Original data"
+          f.puts error[:data]
+          f.puts "---------------------------------------"
+        end
+      end
+    end
+
+    def add_to_errors type, original_data, model
+      @errors[type] << {:errors => model.errors, :model => model, :data => original_data}
+    end
+
+    def generate_counts counts_data, id
       counts_data.keys.each do |key|
         values = "(#{id},'#{key}',#{counts_data[key].nil? ? "NULL" : counts_data[key]})"
         sql = "INSERT INTO counts ('observation_id','abbr','count') values #{values}"
@@ -80,7 +106,7 @@ module MuseumData
       end
     end
 
-    def self.generate_models data_hash
+    def generate_models data_hash
       observation_hash, place_hash, route_hash = generate_model_hashes(data_hash)
 
       route = Route.where(:route_number => route_hash[:route_number], :year => route_hash[:year]).first
@@ -95,7 +121,7 @@ module MuseumData
 
     end
 
-    def self.parse_data filename
+    def parse_data filename
       output = []
       File.open(filename).each_line do |line|
         observation = parse_observation(line.strip!)
@@ -105,7 +131,7 @@ module MuseumData
     end
 
 
-    def self.generate_model_hashes data_hash
+    def generate_model_hashes data_hash
       observation_hash = {}
       route_hash = {}
       place_hash = {}
@@ -131,7 +157,7 @@ module MuseumData
 
     end
 
-    def self.calculate_covering_area places_string
+    def calculate_covering_area places_string
 
       unless places_string == nil
         if places_string =~ /-/
@@ -148,7 +174,7 @@ module MuseumData
       end
     end
 
-    def self.generate_date hash, prefix
+    def generate_date hash, prefix
       date = nil
       month = "#{prefix}_observation_date_month".to_sym
       day = "#{prefix}_observation_date_day".to_sym
@@ -163,7 +189,7 @@ module MuseumData
       return date
     end
 
-    def self.parse_observation line
+    def parse_observation line
       return if line.nil?
       observation = {}
       offset = 0
@@ -206,7 +232,7 @@ module MuseumData
       observation
     end
 
-    def self.parse_other_species extra_data
+    def parse_other_species extra_data
       offset = 0
       other_species = {}
       additional_counts = {}
@@ -228,7 +254,7 @@ module MuseumData
       return [other_species , additional_counts]
     end
 
-    def self.convert_value type, value
+    def convert_value type, value
       return nil if value.nil?
       value.strip!
       return nil if value.empty?
