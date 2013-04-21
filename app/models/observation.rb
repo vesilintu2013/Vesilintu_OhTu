@@ -27,7 +27,7 @@ class Observation < ActiveRecord::Base
                                           :inclusion => 0..999,
                                           :allow_blank => true,
                                           :allow_nil => true, :if => "source == 'museum'"
-  validate :tipu_observer
+  validate :tipu_observer, :if => "source == 'museum'"
 
   # Receive a hash of parameters and construct a query using the search terms 
   # in the hash.

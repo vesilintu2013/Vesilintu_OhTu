@@ -18,6 +18,10 @@ module TipuApi
       make_request("municipalities", filter)["municipalities"]
     end
 
+    def self.validate_coordinates municipality = "", lat = "", lon = ""
+      coordinate_validation_request municipality, lat, lon, type = "UNIFORM", format = "JSON"
+    end
+
     def self.make_request endpoint, filter = ""
       credentials = YAML.load(File.open(Rails.root.join("config/tipu.yml")))
 
@@ -43,5 +47,31 @@ module TipuApi
       end
     end
 
+    def self.coordinate_validation_request municipality, lat, lon, type, format
+      credentials = YAML.load(File.open(Rails.root.join("config/tipu.yml")))
+
+      uri = URI.parse("#{credentials["url"]}coordinate-validation-service")
+
+      http = Net::HTTP.new(uri.host, uri.port)
+      http.use_ssl = true
+
+      req = Net::HTTP::Post.new(uri.request_uri)
+      req.basic_auth credentials["username"], credentials["password"]
+
+      req.set_form_data({ "municipality" => municipality,
+                          "lat" => lat,
+                          "lon" => lon,
+                          "type" => type,
+                          "format" => format })
+
+      res = http.start do |http|
+        http.request(req)
+      end
+      if res.code == "200"
+        return ActiveSupport::JSON.decode(res.body)
+      else
+        throw "Response failed, code: #{res.code}"
+      end
+    end
   end
 end

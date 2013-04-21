@@ -53,5 +53,8 @@ RSpec.configure do |config|
     TipuApi::Interface.stub(:observer_synonyms) do |arg|
       ""
     end
+    TipuApi::Interface.stub(:validate_coordinates) do |mun, lat, lon|
+      { "validation-response" => { "pass" => true } }
+    end
   end
 end
