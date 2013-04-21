@@ -50,5 +50,8 @@ RSpec.configure do |config|
     TipuApi::Interface.stub(:municipalities) do |arg|
       { "municipality" => [{ "id" => "CHICAGO" }, { "id" => arg.capitalize }] }
     end
+    TipuApi::Interface.stub(:observer_synonyms) do |arg|
+      ""
+    end
   end
 end

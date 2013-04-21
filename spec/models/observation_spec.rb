@@ -96,15 +96,36 @@ describe Observation do
       it { should_not be_valid }
     end
 
-#    describe "when TipuApi returns an empty list of observers" do
-#      before { TipuApi::Interface.stub(:ringers).and_return("") }
-#      it { should_not be_valid }
-#    end
-#
-#    describe "when TipuApi return a list of observers that does not contain this observer" do
-#      before { TipuApi::Interface.stub(:ringers).and_return({ "ringer" => { "id" => 1234 } }) }
-#      it { should_not be_valid }
-#    end
+    describe "when TipuApi returns an empty list of observers" do
+      before { TipuApi::Interface.stub(:ringers).and_return("") }
+      it { should_not be_valid }
+    end
+
+    describe "when TipuApi return a list of observers that does not contain this observer" do
+      before { TipuApi::Interface.stub(:ringers).and_return({ "ringer" => { "id" => 1234 } }) }
+      it { should_not be_valid }
+    end
+    
+    describe "when observer is not found in TipuApi" do
+      before { TipuApi::Interface.stub(:ringers).and_return("") }
+      
+      describe "and TipuApi observer-synonyms for this observer is empty" do
+        it { should_not be_valid }
+      end
+
+      describe "and TipuApi observer-synonyms for this observer does not contain this observer" do
+        before { TipuApi::Interface.stub(:observer_synonyms).and_return({ "synonym" => [{ "id" => 123 }, {"id" => 234}] }) }
+        it { should_not be_valid }
+      end
+      
+      describe "but TipuApi observer-synonyms contains this observer" do
+        before do
+          TipuApi::Interface.stub(:observer_synonyms).and_return({ "synonym" => { "id" => @observation.observer_id, "correct-id" => 666 } })
+        end
+
+        it { should be_valid }
+      end
+    end
 end
 
 

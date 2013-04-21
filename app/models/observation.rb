@@ -27,7 +27,7 @@ class Observation < ActiveRecord::Base
                                           :inclusion => 0..999,
                                           :allow_blank => true,
                                           :allow_nil => true, :if => "source == 'museum'"
-#  validate :tipu_observer
+  validate :tipu_observer
 
   # Receive a hash of parameters and construct a query using the search terms 
   # in the hash.
@@ -61,6 +61,22 @@ class Observation < ActiveRecord::Base
       end
     elsif ringers.is_a?(Hash)
       if ringers["id"] == observer_id
+        return true
+      end
+    end
+
+    # Check for observer-synonyms if observer_id is not found in TipuApi ringers
+    query_result = TipuApi::Interface.observer_synonyms filter = observer_id.to_s
+    synonyms = query_result["synonym"]
+
+    if synonyms.is_a?(Array)
+      synonyms.each do |synonym|
+        if synonym["id"] == observer_id
+          return true
+        end
+      end
+    elsif synonyms.is_a?(Hash)
+      if synonyms["id"] == observer_id
         return true
       end
     end
