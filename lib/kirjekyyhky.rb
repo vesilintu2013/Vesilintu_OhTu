@@ -1,6 +1,7 @@
 require 'rack'
 require 'net/http'
 require 'net/https'
+require 'nokogiri'
 module Kirjekyyhky 
   class Interface
     BOUNDARY = "AaB03x"
@@ -39,12 +40,14 @@ module Kirjekyyhky
       # are assigned a route_number through some additional logic when actually creating the Route record. 
       # route_number cannot be empty in an actual Route record, therefore it needs to be assigned
       # a dummy value for validation purposes. 
-      route_hash[:route_number] = 9001
+      #route_hash[:route_number] = 9001
       observation = Observation.new(observation_hash)
       route = Route.new(route_hash)
       place = Place.new(place_hash)
 
       errors = generate_common_error_hash observation, route, place
+      warnings = {}
+      errors_xml = generate_errors_xml errors, warnings
     end
     
     private
@@ -105,6 +108,36 @@ module Kirjekyyhky
         end
         
         errors
+      end
+
+      def self.generate_errors_xml errors, warnings
+        if errors.empty?
+          has_errors = "no"
+        else
+          has_errors = "yes"
+        end
+
+        if warnings.empty?
+          has_warnings = "no"
+        else
+          has_warnings = "yes"
+        end
+
+        builder = Nokogiri::XML::Builder.new do |xml|
+          xml.validation_response(:errors => has_errors, :warnings => has_warnings) {
+            xml.errors {
+              errors.each do |k, v|
+                xml.error(:field_name => k.to_s, :field_title => k.to_s, :text => v)
+              end
+            }
+            xml.warnings {
+              warnings.each do |k, v|
+                xml.warning(:field_name => k.to_s, :field_title => k.to_s, :text => v)
+              end
+            }
+          }
+        end
+        builder.to_xml.gsub(/validation_response/, 'validation-response').gsub(/field_name/, 'field-name').gsub(/field_title/, 'field-title')
       end
   end
   
