@@ -40,7 +40,7 @@ module Kirjekyyhky
       # are assigned a route_number through some additional logic when actually creating the Route record. 
       # route_number cannot be empty in an actual Route record, therefore it needs to be assigned
       # a dummy value for validation purposes. 
-      #route_hash[:route_number] = 9001
+      route_hash[:route_number] = 9001
       observation = Observation.new(observation_hash)
       route = Route.new(route_hash)
       place = Place.new(place_hash)

@@ -1,5 +1,7 @@
+require 'kirjekyyhky'
 class ObservationsController < ApplicationController
-
+  include Kirjekyyhky
+ 
   def index
     @observations = Observation.paginate(:page => params[:page])
   end
@@ -35,5 +37,9 @@ class ObservationsController < ApplicationController
     else
       render :action => 'edit'
     end
+  end
+
+  def validate
+    render xml: Kirjekyyhky::Interface.validate_form(params["form_data"]["data"])
   end
 end

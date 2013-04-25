@@ -1,6 +1,7 @@
 VesilintuOhtu::Application.routes.draw do
   match 'observations/search' => 'observations#search'
   match 'logout' => 'sessions#logout'
+  match 'validation-service' => 'observations#validate'
   resources :observations
   resources :sessions
 
