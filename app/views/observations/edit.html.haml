@@ -18,7 +18,10 @@
         .control-group
           .controls.form-inline
             = r.label :route_representative_class, "Reitin edustavuus atlasruudun vesistötyyppien kannalta"
-            = r.text_field :route_representative_class
+            = r.select :route_representative_class, [['0 - Vaikea arvioida', '0'],
+                                                     ['1 - Edustava', '1'],
+                                                     ['2 - Kohteet painottuvat karuihin vesistöihin', '2'],
+                                                     ['3 - Kohteet painottuvat reheviin vesistöihin', '3']], { :include_blank => true }
         .control-group
           %span.control-label Laskentapaikkojen määrä
           .controls.form-inline
@@ -47,7 +50,14 @@
         .control-group
           .control.form-inline
             = p.label :biotope_class, "Biotooppiluokka"
-            = p.text_field :biotope_class
+            = p.select :biotope_class, [['1 - Karu, metsä- tai suorantainen järvi tai lampi (yli 1 km2 laajuisilla karuilla järvillä tyyppilajeina kuikka ja koskelot)', '1'],
+                                        ['2 - Syvä, osittain rehevöitynyt järvi, lahdissa laajahkoja ruovikoita (silkkiuikku runsaana Etelä- ja Keski-Suomessa)', '2'],
+                                        ['3 - Matala, metsä- tai suorantainen runsaskasvustoinen järvi (ruskeavetinen, kortteikkoinen ja runsaslintuinen; pintaa tavallisesti laskettu', '3'],
+                                        ['4 - Runsaskasvustoinen järvi maanviljelyksen tai asutuksen vaikutuspiirissä (melko matala, yleensä ruovikkoinen lintujärvi; yleisimpiä Etelä- ja Lounais-Suomessa)', '4'],
+                                        ['5 - Karu, vähäkasvustoinen merenranta', '5'],
+                                        ['6 - Rehevähkö merenranta, jonkun verran ruovikoita (sekä matalia, että syviä rantoja)', '6'],
+                                        ['7 - Runsaskasvustoinen merenlahti (sekä matalia että syviä rantoja); vastaa tyypin 4 lintujärveä', '7'],
+                                        ['8 - Muu, mm. tekoaltaat ja joet (luonnehdi lisätiedoissa niukka/runsaskasvustoisuutta)', '8']], { :include_blank => true }
         .control-group
           .controls.form-inline
             = p.label :observation_place_name, "Laskentapaikan nimi"
