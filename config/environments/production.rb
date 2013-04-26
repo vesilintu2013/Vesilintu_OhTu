@@ -67,3 +67,5 @@ VesilintuOhtu::Application.configure do
   config.relative_url_root = "/vesilintu"
 end
 ADMIN_PASSWORD = ""
+KIRJEKYYHKY_USERNAME = ""
+KIRJEKYYHKY_PASSWORD = ""

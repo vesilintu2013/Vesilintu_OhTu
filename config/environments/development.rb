@@ -36,3 +36,5 @@ VesilintuOhtu::Application.configure do
   config.assets.debug = true
 end
 ADMIN_PASSWORD = "joppeli"
+KIRJEKYYHKY_USERNAME = "simo"
+KIRJEKYYHKY_PASSWORD = "vaatehuone"
