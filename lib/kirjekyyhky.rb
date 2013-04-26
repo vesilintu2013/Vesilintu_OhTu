@@ -1,3 +1,4 @@
+# encoding: utf-8
 require 'rack'
 require 'net/http'
 require 'net/https'
@@ -127,12 +128,12 @@ module Kirjekyyhky
           xml.validation_response(:errors => has_errors, :warnings => has_warnings) {
             xml.errors {
               errors.each do |k, v|
-                xml.error(:field_name => k.to_s, :field_title => k.to_s, :text => v)
+                xml.error(:field_name => k.to_s, :field_title => FIELD_DESCRIPTIONS[k], :text => v)
               end
             }
             xml.warnings {
               warnings.each do |k, v|
-                xml.warning(:field_name => k.to_s, :field_title => k.to_s, :text => v)
+                xml.warning(:field_name => k.to_s, :field_title => FIELD_DESCRIPTIONS[k], :text => v)
               end
             }
           }
@@ -173,4 +174,33 @@ module Kirjekyyhky
     :roaming_observation_place_count,
     :water_system_area
   ]
+  
+  FIELD_DESCRIPTIONS = {
+    :year => "Vuosi",
+    :observer_id => "Laskija",
+    :first_observation_hour => "Ensimmäisen laskennan aloitustunti",
+    :first_observation_duration => "Ensimmäisen laskennan kesto",
+    :second_observation_hour => "Toisen laskennan aloitustunti",
+    :second_observation_duration => "Toisen laskennan kesto",
+    :spot_counting => "Laskennan tyyppi",
+    :binoculars => "Käytettiinkö kaukoputkea",
+    :boat => "Käytettiinkö venettä",
+    :gullbirds => "Laskettiinko lokkilinnut",
+    :waders_eurasian_bittern => "Laskettiinko kahlaajat ja kaulushaikara",
+    :passerine => "Laskettiinko varpuslinnut",
+    :observation_place_number => "Laskentapaikan numero",
+    :nnn_coordinate => "Pituuskoordinaatti",
+    :eee_coordinate => "Leveyskoordinaatti",
+    :biotope_class => "Paikan biotooppiluokka",
+    :observation_place_name => "Laskentapaikan nimi",
+    :place_area => "Lasketun paikan ala",
+    :area_covers_fully => "Laskentapaikan kattavuus",
+    :route_number => "Reitin numero",
+    :municipal_code => "Tärkein havaintokunta",
+    :route_representative_class => "Reitin edustavuus",
+    :spot_observation_place_count => "Pistelaskentapaikkoja (kpl)",
+    :roaming_observation_place_count => "Kiertolaskentapaikkoja (kpl)",
+    :water_system_area => "Kohteen pinta-ala"
+  }
+
 end
