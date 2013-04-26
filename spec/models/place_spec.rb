@@ -65,5 +65,25 @@ describe "Place" do
       before { @place.area_covers_fully = "boo" }
       it { should_not be_valid }
     end
+
+    describe "when biotope_class is not a number" do
+      before { @place.biotope_class = "asd" }
+      it { should_not be_valid }
+    end
+
+    describe "when biotope_class is too small" do
+      before { @place.biotope_class = 0 }
+      it { should_not be_valid }
+    end
+
+    describe "when biotope_class is too large" do
+      before { @place.biotope_class = 9 }
+      it { should_not be_valid }
+    end
+
+    describe "when biotope_class is nil" do
+      before { @place.biotope_class = nil }
+      it { should be_valid }
+    end
   end
 end

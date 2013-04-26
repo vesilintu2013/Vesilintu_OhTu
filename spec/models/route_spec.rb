@@ -70,5 +70,25 @@ describe "Route" do
       before { TipuApi::Interface.stub(:municipalities).and_return({ "municipality" => { "id" => "KONTU" } } ) }
       it { should_not be_valid }
     end
+
+    describe "when route representative class is not a number" do
+      before { @route.route_representative_class = "asd" }
+      it { should_not be_valid }
+    end
+
+    describe "when route representative class is too small" do
+      before { @route.route_representative_class = -1 }
+      it { should_not be_valid }
+    end
+
+    describe "when route representative class is too large" do
+      before { @route.route_representative_class = 4 }
+      it { should_not be_valid }
+    end
+
+    describe "when route representative class is nil" do
+      before { @route.route_representative_class = nil }
+      it { should be_valid }
+    end
   end
 end

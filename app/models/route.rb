@@ -9,6 +9,9 @@ class Route < ActiveRecord::Base
   validates :water_system_area, :numericality => { :greater_than_or_equal_to => 0, :less_than_or_equal_to => 9999.9 },
                                 :allow_blank => true,
                                 :allow_nil => true
+  validates :route_representative_class, :numericality => { :greater_than_or_equal_to => 0, :less_than_or_equal_to => 3 },
+                                         :allow_blank => true,
+                                         :allow_nil => true
   validate :tipuapi_municipality
 
   def tipuapi_municipality

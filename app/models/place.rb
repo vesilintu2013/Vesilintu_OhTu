@@ -16,6 +16,9 @@ class Place < ActiveRecord::Base
   validates :area_covers_fully, :numericality => { :greater_than_or_equal_to => 0, :less_than_or_equal_to => 2 },
                                 :allow_nil => true,
                                 :allow_blank => true, :if => "source == 'museum'"
+  validates :biotope_class, :numericality => { :greater_than_or_equal_to => 1, :less_than_or_equal_to => 8 },
+                            :allow_nil => true,
+                            :allow_blank => true, :if => "source == 'museum'"
 
   validate :tipuapi_coordinates, :if => "source == 'museum'"
 
