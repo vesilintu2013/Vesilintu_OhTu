@@ -170,6 +170,7 @@ DEPENDENCIES
   rails (= 3.2.11)
   rspec
   rspec-rails
+  rubyzip
   sass-rails (~> 3.2.3)
   sqlite3
   therubyracer

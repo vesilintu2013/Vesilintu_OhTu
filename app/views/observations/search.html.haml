@@ -4,6 +4,7 @@
       %h1 Hakutulokset
     .span4
       = render 'layouts/search'
+      = link_to "Downloads", observations_downloads_path(@search_params)
     .span8
       - unless @observations.nil?
         = will_paginate @observations
