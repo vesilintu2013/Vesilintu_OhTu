@@ -1,4 +1,5 @@
 require 'kirjekyyhky'
+require 'zip/zip'
 class ObservationsController < ApplicationController
   include Kirjekyyhky
   skip_before_filter :check_auth, :only => [:validate]
@@ -28,7 +29,8 @@ class ObservationsController < ApplicationController
 
   def search
     # Let the model decide which params are search parameters 
-    @observations = Observation.search(params).paginate(:page => params[:page])
+    obs, @search_params = Observation.search(params)
+    @observations = obs.paginate(:page => params[:page])
   end
 
   def update
@@ -45,7 +47,37 @@ class ObservationsController < ApplicationController
     render xml: Kirjekyyhky::Interface.validate_form(params["form_data"]["data"])
   end
 
+  def downloads
+    places, routes, counts, observations = Observation.to_csv(params)
+
+    t = Tempfile.new("zip_temp_file")
+    Zip::ZipOutputStream.open(t.path) do |z|
+      unless places_csv.nil?
+        z.put_next_entry("places.csv")
+        z.write(places_csv)
+      end
+      unless routes_csv.nil?
+        z.put_next_entry("routes.csv")
+        z.write(routes_csv)
+      end
+      unless counts_csv.nil?
+        z.put_next_entry("counts.csv")
+        z.write(counts_csv)
+      end
+      unless observations_csv.nil?
+        z.put_next_entry("observations.csv")
+        z.write(observations_csv)
+      end
+    end
+
+    send_file t.path, :type => "application/zip", :disposition => "attachment", :filename => "export.zip"
+
+    t.close
+
+  end
+
   private
+
     def kirjekyyhky_basic_auth
       authenticate_or_request_with_http_basic do |username, password|
         username == KIRJEKYYHKY_USERNAME and password == KIRJEKYYHKY_PASSWORD

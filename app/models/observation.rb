@@ -45,7 +45,7 @@ class Observation < ActiveRecord::Base
               search['source'].blank?
     result = result.where("lower(places.observation_place_name) = lower(?)",  search['observation_place_name'] ) unless
               search['observation_place_name'].blank?
-    return result
+    return result, search_params_hash(search)
   end
 
   def tipu_observer
@@ -82,5 +82,50 @@ class Observation < ActiveRecord::Base
     end
 
     errors.add(:observer_id, "Havainnoijatunnus ei kelpaa") 
+  end
+
+  def self.to_csv params
+    places = []
+    routes = []
+    counts = []
+    observations = search(params).first
+    observations.each do |obs|
+      places << obs.place unless obs.place.nil?
+      routes << obs.route unless obs.route.nil?
+      obs.counts.each{|c| counts << c}
+    end
+
+    [places, routes, counts, observations].map{|a| generate_csv(a)}
+    
+  end
+
+  private
+
+  def self.generate_csv array
+    return nil if array.nil? || array.empty?
+    array.uniq!
+    CSV.generate do |csv|
+      csv << array.first.class.column_names
+      array.each do |s|
+        csv << s.attributes.values_at(*array.first.class.column_names)
+      end
+    end
+  end
+
+  def self.search_params_hash(search)
+    params = {}
+    params[:observation_place_number] = search['observation_place_number'] unless
+              search['observation_place_number'].blank?
+    params[:year] = search['year'] unless
+              search['year'].blank?
+    params[:observer_id] = search['observer_id'] unless
+              search['observer_id'].blank?
+    params[:route_number] = search['route_number'] unless
+              search['route_number'].blank?
+    params[:source] = search['source'] unless
+              search['source'].blank?
+    params[:observation_place_name] = search['observation_place_name'] unless
+              search['observation_place_name'].blank?
+    params
   end
 end
