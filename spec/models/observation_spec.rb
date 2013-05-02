@@ -261,28 +261,28 @@ describe Observation do
     end
 
     it "finds records by route number" do
-      Observation.search("route_number" => "9005").should == [@observation_a]
+      Observation.search("route_number" => "9005").should == [[@observation_a], :route_number => "9005"]
     end
 
     it "finds records by year" do
-      Observation.search("year" => "2000").should == [@observation_a, @observation_b]
+      Observation.search("year" => "2000").should == [[@observation_a, @observation_b], :year => "2000"]
     end
 
     it "finds records by observation place number" do
-      Observation.search("observation_place_number" => "10").should == [@observation_c]
+      Observation.search("observation_place_number" => "10").should == [[@observation_c], :observation_place_number => "10"]
     end
 
     it "finds records by observer id" do
-      Observation.search("observer_id" => "66").should == [@observation_d]
+      Observation.search("observer_id" => "66").should == [[@observation_d], :observer_id => "66"]
     end
 
     it "finds records by observation place name" do
-      Observation.search("observation_place_name" => "testipaikka").should == [@observation_b]
+      Observation.search("observation_place_name" => "testipaikka").should == [[@observation_b], :observation_place_name => "testipaikka"]
     end
 
     it "finds records by a combination of search terms" do
       Observation.search("route_number" => "9005",
-                         "year" => "2000").should == [@observation_a]
+                         "year" => "2000").should == [[@observation_a], { :route_number => "9005", :year => "2000" }]
     end
   end
 end
