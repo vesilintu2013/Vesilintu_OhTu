@@ -8,25 +8,30 @@ class Observation < ActiveRecord::Base
   attr_accessible :year, :observer_id, :first_observation_date, :second_observation_date, :first_observation_hour, :first_observation_duration, :second_observation_hour, :second_observation_duration, :spot_counting, :binoculars, :boat, :gullbirds, :waders_eurasian_bittern, :passerine, :updated_at, :source, :route_attributes, :place_attributes, :counts_attributes, :place_id, :rktl_telescope
   accepts_nested_attributes_for :route, :place, :counts
 
-  validates :year, :numericality => { :greater_than_or_equal_to => 1986, :less_than_or_equal_to => 2013 }, :if => "source == 'museum'"
-
-  validates :observer_id, :presence => true, :if => "source == 'museum'"
+  # Common validations for both museum and rktl data
+  validates :year, :numericality => { :greater_than_or_equal_to => 1986, :less_than_or_equal_to => 2013 }
   validates :first_observation_hour, :numericality => { :only_integer => true },
                                      :inclusion => 0..23,
                                      :allow_blank => true,
-                                     :allow_nil => true, :if => "source == 'museum'"
+                                     :allow_nil => true
   validates :second_observation_hour, :numericality => { :only_integer => true },
                                       :inclusion => 0..23,
                                       :allow_blank => true,
-                                      :allow_nil => true, :if => "source == 'museum'"
+                                      :allow_nil => true
   validates :first_observation_duration, :numericality => { :only_integer => true },
                                          :inclusion => 0..999,
                                          :allow_blank => true,
-                                         :allow_nil => true, :if => "source == 'museum'"
+                                         :allow_nil => true
   validates :second_observation_duration, :numericality => { :only_integer => true },
                                           :inclusion => 0..999,
                                           :allow_blank => true,
-                                          :allow_nil => true, :if => "source == 'museum'"
+                                          :allow_nil => true
+
+  # Validations for museum data
+  validates :gullbirds, :presence => true, :if => "source == 'museum'"
+  validates :waders_eurasian_bittern, :presence => true, :if => "source == 'museum'"
+  validates :passerine, :presence => true, :if => "source == 'museum'"
+  validates :observer_id, :presence => true, :if => "source == 'museum'"
   validate :tipu_observer, :if => "source == 'museum'"
 
   # Receive a hash of parameters and construct a query using the search terms 
