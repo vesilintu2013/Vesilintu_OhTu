@@ -4,7 +4,8 @@ describe "Place" do
   describe "validations" do
 
     before do
-      @place = FactoryGirl.create(:place)
+      route = FactoryGirl.create(:route)
+      @place = FactoryGirl.create(:place, :route_id => route.id)
     end
 
     subject { @place }
@@ -132,24 +133,5 @@ describe "Place" do
       it { should_not be_valid }
     end
 
-    describe "when biotope_class is not a number" do
-      before { @place.biotope_class = "asd" }
-      it { should_not be_valid }
-    end
-
-    describe "when biotope_class is too small" do
-      before { @place.biotope_class = 0 }
-      it { should_not be_valid }
-    end
-
-    describe "when biotope_class is too large" do
-      before { @place.biotope_class = 9 }
-      it { should_not be_valid }
-    end
-
-    describe "when biotope_class is nil" do
-      before { @place.biotope_class = nil }
-      it { should be_valid }
-    end
   end
 end

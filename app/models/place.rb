@@ -12,9 +12,6 @@ class Place < ActiveRecord::Base
                          :allow_blank => true
   validates :nnn_coordinate, :presence => true
   validates :eee_coordinate, :presence => true
-  validates :biotope_class, :numericality => { :greater_than_or_equal_to => 1, :less_than_or_equal_to => 8 },
-                            :allow_nil => true,
-                            :allow_blank => true
 
   # Validations for museum data
   validates :observation_place_number, :inclusion => 1..999, :if => "source == 'museum'"
@@ -22,10 +19,13 @@ class Place < ActiveRecord::Base
   validates :area_covers_fully, :numericality => { :greater_than_or_equal_to => 0, :less_than_or_equal_to => 2 },
                                 :allow_nil => true,
                                 :allow_blank => true, :if => "source == 'museum'"
+  validates :biotope_class, :numericality => { :greater_than_or_equal_to => 1, :less_than_or_equal_to => 8 },
+                            :allow_nil => true,
+                            :allow_blank => true, :if => "source == 'museum'"
   validate :tipuapi_coordinates, :if => "source == 'museum'"
 
   # Validations for rktl data
-  validates :observation_place_number, :numericality => { :only_integer => true }, :if => "source == 'rktl'"
+  validates :observation_place_number, :inclusion => 1..9999, :if => "source == 'rktl'"
 
   def tipuapi_coordinates
     route = Route.find(route_id)
