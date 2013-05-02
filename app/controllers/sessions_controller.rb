@@ -31,10 +31,10 @@ class SessionsController < ApplicationController
 
   def parse_xml data
     output = {}
-    doc = XML::Parser.string(data)
+    doc = XML::Parser.string(data).parse
     output[:type] = doc.child["type"]
     doc.child.children.each do |child|
-      output[child.name.to_sym] = child.child
+      output[child.name.to_sym] = child.content
     end
     output
     
