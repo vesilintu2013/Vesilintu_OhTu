@@ -191,7 +191,7 @@ module MuseumData
       return date
     end
 
-    def parse_observation line
+    def parse_observation line, abbreviations
       return if line.nil?
       observation = {}
       offset = 0

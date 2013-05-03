@@ -52,21 +52,21 @@ class ObservationsController < ApplicationController
 
     t = Tempfile.new("zip_temp_file")
     Zip::ZipOutputStream.open(t.path) do |z|
-      unless places_csv.nil?
+      unless places.nil?
         z.put_next_entry("places.csv")
         z.write(places_csv)
       end
-      unless routes_csv.nil?
+      unless routes.nil?
         z.put_next_entry("routes.csv")
-        z.write(routes_csv)
+        z.write(routes)
       end
-      unless counts_csv.nil?
+      unless counts.nil?
         z.put_next_entry("counts.csv")
-        z.write(counts_csv)
+        z.write(counts)
       end
-      unless observations_csv.nil?
+      unless observations.nil?
         z.put_next_entry("observations.csv")
-        z.write(observations_csv)
+        z.write(observations)
       end
     end
 
