@@ -37,6 +37,7 @@ module Kirjekyyhky
             
       year = parse_year_from_dates form_data["first_observation_date"], form_data["second_observation_date"]
       route_hash[:year] = year
+      observation_hash[:year] = year
       # This validation service validates form submissions for both existing and new routes. New routes
       # are assigned a route_number through some additional logic when actually creating the Route record. 
       # route_number cannot be empty in an actual Route record, therefore it needs to be assigned
