@@ -54,7 +54,7 @@ class ObservationsController < ApplicationController
     Zip::ZipOutputStream.open(t.path) do |z|
       unless places.nil?
         z.put_next_entry("places.csv")
-        z.write(places_csv)
+        z.write(places)
       end
       unless routes.nil?
         z.put_next_entry("routes.csv")
